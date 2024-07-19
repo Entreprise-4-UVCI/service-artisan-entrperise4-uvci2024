@@ -3,12 +3,13 @@ const sequelize = require('../database');
 const User = require('./UserModel');
 const Category = require('./CategoryModel');
 const Skill = require('./SkillModel');
+const Artisan = require('./ArtisanModel');
 
 const Project = sequelize.define('Project', {
     clientId: {
         type: DataTypes.INTEGER,
         references: {
-            model: User,
+            model: Artisan,
             key: 'id'
         },
         allowNull: false,
@@ -22,7 +23,7 @@ const Project = sequelize.define('Project', {
         allowNull: false,
     },
     status: {
-        type: DataTypes.ENUM('Open', 'In Progress', 'Completed', 'Cancelled'),
+        type: DataTypes.ENUM('OPEN', 'PENDIND', 'COMPLETED', 'CANCELLED'),
         defaultValue: 'Open',
     },
     location: {
@@ -49,7 +50,7 @@ const Project = sequelize.define('Project', {
     timestamps: false,
 });
 
-Project.belongsTo(User, { foreignKey: 'clientId' });
+Project.belongsTo(Artisan, { foreignKey: 'clientId' });
 Project.belongsTo(Category, { foreignKey: 'categoryId' });
 
 const ProjectSkill = sequelize.define('ProjectSkill', {}, { timestamps: false });

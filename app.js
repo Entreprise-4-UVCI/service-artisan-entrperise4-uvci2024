@@ -17,10 +17,10 @@ const applicationRoutes = require('./routes/applicationRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 
 // Utilisation des routes
-app.use('/api/users', userRoutes);
-app.use('/api/projects', projectRoutes);
-app.use('/api/applications', applicationRoutes);
-app.use('/api/reviews', reviewRoutes);
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/projects', projectRoutes);
+app.use('/api/v1/applications', applicationRoutes);
+app.use('/api/v1/reviews', reviewRoutes);
 
 // Synchronisation de la base de données et démarrage du serveur
 sequelize.sync({ force: true }).then(() => {

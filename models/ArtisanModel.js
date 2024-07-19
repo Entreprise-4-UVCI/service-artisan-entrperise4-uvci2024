@@ -5,14 +5,6 @@ const Category = require('./CategoryModel');
 const Skill = require('./SkillModel');
 
 const Artisan = sequelize.define('Artisan', {
-    userId: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: User,
-            key: 'id'
-        },
-        allowNull: false,
-    },
     firstname: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -37,12 +29,12 @@ const Artisan = sequelize.define('Artisan', {
     codePostal: {
         type: DataTypes.STRING,
         allowNull: false,
-        defaultValue:"225"
+        defaultValue: "225"
     },
     gender: {
         type: DataTypes.ENUM('Male', 'Female', 'Other'),
         allowNull: true,
-        defaultValue:"Male"
+        defaultValue: "Male"
     },
     dateOfBirth: {
         type: DataTypes.DATEONLY,
