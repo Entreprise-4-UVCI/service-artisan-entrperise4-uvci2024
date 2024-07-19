@@ -3,7 +3,15 @@ const sequelize = require('../database');
 const { DataTypes } = require('sequelize');
 
 const User = sequelize.define('UserModel', {
-    name: {
+    firstname: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    lastname: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    company: {
         type: DataTypes.STRING,
         allowNull: false,
     },
@@ -17,6 +25,15 @@ const User = sequelize.define('UserModel', {
         allowNull: false,
     },
     phone: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    codePostal: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue:"225"
+    },
+    profession: {
         type: DataTypes.STRING,
         allowNull: false,
     },
