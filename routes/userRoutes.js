@@ -16,7 +16,7 @@ router.post('/register', async (req, res) => {
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         // Envoyer l'e-mail avec le mot de passe généré
-        await sendEmail(email, 'Bienvenu sur la plateforme', `Tom mot de passe est le : <strong style="height:50px;width:50px"> ${password} <strong>`);
+        await sendEmail(email, 'Bienvenu sur la plateforme', `Ton mot de passe est le suivant : <strong style="height:50px;width:50px"> ${password} <strong>`);
 
         res.status(201).json({ data:user, token:token });
     } catch (error) {
