@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const dotenv =  require("dotenv");
+const dotenv = require("dotenv");
 dotenv.config();
 const sequelize = require('./database');
 const models = require('./models');
@@ -16,6 +16,11 @@ const userRoutes = require('./routes/userRoutes');
 const projectRoutes = require('./routes/projectRoutes');
 const applicationRoutes = require('./routes/applicationRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
+const authenticateToken = require('./middlewares/auth');
+
+app.use("/", authenticateToken, async (req, res) => {
+    res.json({ message: "Api Artisan web availability" });
+})
 
 // Utilisation des routes
 app.use('/api/v1/user', userRoutes);
