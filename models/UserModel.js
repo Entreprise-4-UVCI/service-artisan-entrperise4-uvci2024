@@ -42,12 +42,13 @@ const User = sequelize.define('UserModel', {
         allowNull: false,
     },
     role: {
-        type: DataTypes.ENUM('Client', 'Artisan'),
+        type: DataTypes.ENUM('Admin'),
         allowNull: false,
     },
     gender: {
         type: DataTypes.ENUM('Male', 'Female', 'Other'),
         allowNull: true,
+        defaultValue:"Male"
     },
     dateOfBirth: {
         type: DataTypes.DATEONLY,

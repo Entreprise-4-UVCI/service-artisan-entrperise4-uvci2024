@@ -17,12 +17,51 @@ const Artisan = sequelize.define('Artisan', {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    lasttname: {
+    lastname: {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    company: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+    },
+    phone: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    codePostal: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue:"225"
+    },
+    gender: {
+        type: DataTypes.ENUM('Male', 'Female', 'Other'),
+        allowNull: true,
+        defaultValue:"Male"
+    },
+    dateOfBirth: {
+        type: DataTypes.DATEONLY,
+        allowNull: true,
+    },
+    profilePicture: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
     profession: {
         type: DataTypes.STRING,
+        allowNull: false,
+    },
+    address: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    role: {
+        type: DataTypes.ENUM('Client', 'Artisan'),
         allowNull: false,
     },
     description: {
