@@ -40,7 +40,7 @@ router.post('/login', async (req, res) => {
         }
 
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '48h' });
-        res.json({ data:user, token:token, messsage:"utilisateur connecté" });
+        res.status(200).json({ data:user, token:token, messsage:"utilisateur connecté" });
     } catch (error) {
         res.status(500).json({message:error.message});
     }
@@ -54,7 +54,7 @@ router.patch('/update', authenticateToken, async (req, res) => {
             return res.status(404).send({ error: 'Compte inexsistant' });
         }
         await user.update(req.body);
-        res.json({data:user,message :"Mise à jour du compte réussi"});
+        res.status(200).json({data:user,message :"Mise à jour du compte réussi"});
     } catch (error) {
         res.status(400).json({message:error.message});
     }
@@ -69,7 +69,7 @@ router.delete('/delete', authenticateToken, async (req, res) => {
         }
 
         await user.destroy();
-        res.json({ message: 'User deleted' });
+        res.status(200).json({ message: 'utilisateur supprimer' });
     } catch (error) {
         res.status(500).json({message:error.message});
     }

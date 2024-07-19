@@ -4,47 +4,53 @@ const Review = require('../models/ReviewModel');
 const authenticateToken = require('../middlewares/auth');
 
 // Créer un nouvel avis
-router.post('/', authenticateToken, async (req, res) => {
+router.post('/register', authenticateToken, async (req, res) => {
     try {
         const review = await Review.create({ clientId: req.user.id, ...req.body });
-        res.status(201).send(review);
+        res.status(201).json({data:review, message:"Nouelle Posté avec succès"});
     } catch (error) {
-        res.status(400).send(error);
+        res.status(400).json({message:error.message});
     }
 });
 
 // Obtenir tous les avis
-router.get('/', async (req, res) => {
+router.get('/get_avis', async (req, res) => {
     try {
         const reviews = await Review.findAll();
-        res.status(200).send(reviews);
+        res.status(200).json({data:reviews,message:"Avis"});
     } catch (error) {
-        res.status(500).send(error);
+        res.status(500).json({message:error.message});
     }
 });
+
 
 // Obtenir les avis d'un artisan
-router.get('/artisan/:artisanId', async (req, res) => {
+router.get('/get_avis/artisan/:artisanId', async (req, res) => {
     try {
         const reviews = await Review.findAll({ where: { artisanId: req.params.artisanId } });
-        res.status(200).send(reviews);
+        res.status(200).json({data:reviews,message:"Avis de l'artisan récupérer avec succès"});
     } catch (error) {
-        res.status(500).send(error);
+        res.status(500).json({message:error.message});
     }
 });
 
+
+
+
+
+
 // Mettre à jour un avis
-router.patch('/:id', authenticateToken, async (req, res) => {
+router.patch('/edit/:id', authenticateToken, async (req, res) => {
     try {
         const review = await Review.findByPk(req.params.id);
         if (!review) {
-            return res.status(404).send({ error: 'Review not found' });
+            return res.status(404).json({ message: 'Avis non trouvé' });
         }
 
         await review.update(req.body);
-        res.send(review);
+        res.json({data:review,message:"Mise à ajour de votre avis"});
     } catch (error) {
-        res.status(400).send(error);
+        res.status(400).json({message:error.message});
     }
 });
 
@@ -53,13 +59,13 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     try {
         const review = await Review.findByPk(req.params.id);
         if (!review) {
-            return res.status(404).send({ error: 'Review not found' });
+            return res.status(404).json({ message: 'Avis non trouvé' });
         }
 
         await review.destroy();
-        res.send({ message: 'Review deleted' });
+        res.status(200).json({ message: 'Avis supprimer avec succès' });
     } catch (error) {
-        res.status(500).send(error);
+        res.status(500).json({mesage:error.message});
     }
 });
 

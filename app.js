@@ -31,3 +31,7 @@ sequelize.sync({ force: true }).then(() => {
 }).catch(error => {
     console.error('Impossible de conencter la base de données:', error);
 });
+
+
+
+
