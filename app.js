@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-require('dotenv').config();
+const dotenv =  require("dotenv");
+dotenv.config();
 const sequelize = require('./database');
 const models = require('./models');
 
@@ -17,10 +18,10 @@ const applicationRoutes = require('./routes/applicationRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 
 // Utilisation des routes
-app.use('/api/v1/users', userRoutes);
-app.use('/api/v1/projects', projectRoutes);
-app.use('/api/v1/applications', applicationRoutes);
-app.use('/api/v1/reviews', reviewRoutes);
+app.use('/api/v1/user', userRoutes);
+app.use('/api/v1/project', projectRoutes);
+app.use('/api/v1/application', applicationRoutes);
+app.use('/api/v1/review', reviewRoutes);
 
 // Synchronisation de la base de données et démarrage du serveur
 sequelize.sync({ force: true }).then(() => {

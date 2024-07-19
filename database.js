@@ -1,5 +1,6 @@
 const { Sequelize } = require('sequelize');
-require('dotenv').config();
+const dotenv =  require("dotenv");
+dotenv.config()
 
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres',
