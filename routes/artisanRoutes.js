@@ -9,7 +9,7 @@ const Application = require('../models/ApplicationModel');
 const authenticateToken = require('../middlewares/auth');
 
 // Créer un nouvel artisan
-router.post('/register', async (req, res) => {
+router.post('/register-artisan', async (req, res) => {
     const { email, firstname, lastname, password, phone, address, gender, dateOfBirth, profilePicture, profession, description, services, skills, experienceYears, location, certifications } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -32,6 +32,33 @@ router.post('/register', async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 });
+
+router.post('/register-client', async (req, res) => {
+    const { email, firstname, lastname, password, phone, address, gender, dateOfBirth, profilePicture, profession, description, services, skills, experienceYears, location, certifications } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    try {
+        const user = await User.create({ firstname, lastname, email, password: hashedPassword, phone, address, role: 'Client', gender, dateOfBirth, profilePicture });
+        const artisan = await Artisan.create({
+            userId: user.id,
+            profession,
+            description,
+            services,
+            skills,
+            experienceYears,
+            location,
+            certifications
+        });
+        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '48h' });
+
+        res.status(201).json({ data: user, artisan: artisan, token: token, message: "Client Créer avec succès" });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
+
+
+
 
 // Connexion de l'artisan
 router.post('/login', async (req, res) => {

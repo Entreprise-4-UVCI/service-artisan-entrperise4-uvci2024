@@ -17,7 +17,7 @@ const Artisan = sequelize.define('Artisan', {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    firstname: {
+    lasttname: {
         type: DataTypes.STRING,
         allowNull: false,
     },
