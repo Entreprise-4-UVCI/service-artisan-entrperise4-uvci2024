@@ -6,10 +6,14 @@ const authenticateToken = require('../middlewares/auth');
 // Créer une nouvelle candidature
 router.post('/register', authenticateToken, async (req, res) => {
     try {
-        const application = await Application.create({ artisanId: req.user.id, ...req.body });
-        res.status(201).json({data:application,message:"Candidature Envoyé avec succès"});
+        const application = await Application.create({
+            artisanId: req.body.artisanId,
+            projectId: req.body.projectId,
+            ...req.body
+        });
+        res.status(201).json({ data: application, message: "Candidature Envoyé avec succès" });
     } catch (error) {
-        res.status(400).json({message:error.message});
+        res.status(400).json({ message: error.message });
     }
 });
 
@@ -17,29 +21,29 @@ router.post('/register', authenticateToken, async (req, res) => {
 router.get('/get_applications', async (req, res) => {
     try {
         const applications = await Application.findAll();
-        res.status(200).json({data:applications,message:"Toutes les candidatures"});
+        res.status(200).json({ data: applications, message: "Toutes les candidatures" });
     } catch (error) {
-        res.status(500).json({message:error.message});
+        res.status(500).json({ message: error.message });
     }
 });
 
 // Obtenir les candidatures par projet
-router.get('/project/:projectId', async (req, res) => {
+router.get('/get_applications/project/:projectId', async (req, res) => {
     try {
         const applications = await Application.findAll({ where: { projectId: req.params.projectId } });
-        res.status(200).json({data:applications,message:"Toutes les canditures pour ce poste "});
+        res.status(200).json({ data: applications, message: "Toutes les canditures pour ce poste " });
     } catch (error) {
-        res.status(500).json({message:error.message});
+        res.status(500).json({ message: error.message });
     }
 });
 
 // Obtenir les candidatures d'un artisan
-router.get('/artisan/:artisanId', authenticateToken, async (req, res) => {
+router.get('/get_applications/artisan/:artisanId', authenticateToken, async (req, res) => {
     try {
         const applications = await Application.findAll({ where: { artisanId: req.params.artisanId } });
-        res.status(200).json({data:applications,message:"les canditures d'un artisans"});
+        res.status(200).json({ data: applications, message: "les canditures d'un artisans" });
     } catch (error) {
-        res.status(500).json({message:error.message});
+        res.status(500).json({ message: error.message });
     }
 });
 
@@ -52,9 +56,9 @@ router.patch('/edit/:id', authenticateToken, async (req, res) => {
         }
 
         await application.update(req.body);
-        res.status(200).json({data:application,message:"Candidature mis à jour"});
+        res.status(200).json({ data: application, message: "Candidature mis à jour" });
     } catch (error) {
-        res.status(400).json({message:error.message});
+        res.status(400).json({ message: error.message });
     }
 });
 
@@ -69,7 +73,7 @@ router.delete('/deleted/:id', authenticateToken, async (req, res) => {
         await application.destroy();
         res.status(200).json({ message: 'Candidature supprimé' });
     } catch (error) {
-        res.status(500).json({message:error.message});
+        res.status(500).json({ message: error.message });
     }
 });
 

@@ -23,10 +23,16 @@ const Review = sequelize.define('Review', {
     rating: {
         type: DataTypes.FLOAT,
         allowNull: false,
+        defaultValue: 1
     },
     comment: {
         type: DataTypes.TEXT,
         allowNull: false,
+    },
+    access: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
     },
     createdAt: {
         type: DataTypes.DATE,

@@ -19,13 +19,14 @@ const Application = sequelize.define('Application', {
             key: 'id'
         },
         allowNull: false,
+        unique:true
     },
     message: {
         type: DataTypes.TEXT,
         allowNull: false,
     },
     status: {
-        type: DataTypes.ENUM('Pending', 'Accepted', 'Rejected'),
+        type: DataTypes.ENUM('PENDING', 'ACCEPTED', 'REJECTED'),
         defaultValue: 'Pending',
     },
     createdAt: {
