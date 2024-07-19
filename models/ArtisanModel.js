@@ -13,6 +13,14 @@ const Artisan = sequelize.define('Artisan', {
         },
         allowNull: false,
     },
+    firstname: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    firstname: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
     profession: {
         type: DataTypes.STRING,
         allowNull: false,
