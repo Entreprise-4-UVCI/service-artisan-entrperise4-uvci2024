@@ -21,6 +21,10 @@ const Artisan = sequelize.define('Artisan', {
         type: DataTypes.TEXT,
         allowNull: false,
     },
+    password: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+    },
     services: {
         type: DataTypes.ARRAY(DataTypes.STRING),
         allowNull: false,
