@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const dotenv = require("dotenv");
+const dotenv =  require("dotenv");
 dotenv.config();
 const sequelize = require('./database');
 const models = require('./models');
@@ -12,18 +12,20 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Import des routes
+const artisanRoutes = require('./routes/artisanRoutes');
 const userRoutes = require('./routes/userRoutes');
 const projectRoutes = require('./routes/projectRoutes');
 const applicationRoutes = require('./routes/applicationRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const authenticateToken = require('./middlewares/auth');
 
-app.use("/", authenticateToken, async (req, res) => {
-    res.json({ message: "Api Artisan web availability" });
+app.use("/",authenticateToken,async(req,res)=>{
+    res.json({message:"Api Artisan web availability"});
 })
 
 // Utilisation des routes
 app.use('/api/v1/user', userRoutes);
+app.use('/api/v1/artisan', artisanRoutes);
 app.use('/api/v1/project', projectRoutes);
 app.use('/api/v1/application', applicationRoutes);
 app.use('/api/v1/review', reviewRoutes);
