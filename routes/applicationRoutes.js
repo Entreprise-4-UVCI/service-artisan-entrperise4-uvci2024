@@ -4,10 +4,10 @@ const Application = require('../models/ApplicationModel');
 const authenticateToken = require('../middlewares/auth');
 
 // Créer une nouvelle candidature
-router.post('/', authenticateToken, async (req, res) => {
+router.post('/register', authenticateToken, async (req, res) => {
     try {
         const application = await Application.create({ artisanId: req.user.id, ...req.body });
-        res.status(201).json({data:application,message:"Candidature Envoyeé avec succès"});
+        res.status(201).json({data:application,message:"Candidature Envoyé avec succès"});
     } catch (error) {
         res.status(400).json({message:error.message});
     }
@@ -37,14 +37,14 @@ router.get('/project/:projectId', async (req, res) => {
 router.get('/artisan/:artisanId', authenticateToken, async (req, res) => {
     try {
         const applications = await Application.findAll({ where: { artisanId: req.params.artisanId } });
-        res.status(200).json({data:applications,message:"les canditure d'un artisans"});
+        res.status(200).json({data:applications,message:"les canditures d'un artisans"});
     } catch (error) {
         res.status(500).json({message:error.message});
     }
 });
 
 // Mettre à jour une candidature
-router.patch('/:id', authenticateToken, async (req, res) => {
+router.patch('/edit/:id', authenticateToken, async (req, res) => {
     try {
         const application = await Application.findByPk(req.params.id);
         if (!application) {
@@ -59,7 +59,7 @@ router.patch('/:id', authenticateToken, async (req, res) => {
 });
 
 // Supprimer une candidature
-router.delete('/:id', authenticateToken, async (req, res) => {
+router.delete('/deleted/:id', authenticateToken, async (req, res) => {
     try {
         const application = await Application.findByPk(req.params.id);
         if (!application) {
