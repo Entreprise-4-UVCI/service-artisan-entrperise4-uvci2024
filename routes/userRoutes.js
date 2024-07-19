@@ -16,11 +16,11 @@ router.post('/register', async (req, res) => {
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         // Envoyer l'e-mail avec le mot de passe généré
-        await sendEmail(email, 'Welcome to Our Platform', `Your password is: ${password}`);
+        await sendEmail(email, 'Bienvenu sur la plateforme', `Tom mot de passe est le : <strong style="height:50px;width:50px"> ${password} <strong>`);
 
-        res.status(201).json({ user, token });
+        res.status(201).json({ data:user, token:token });
     } catch (error) {
-        res.status(400).send(error);
+        res.status(400).json({message:error.message});
     }
 });
 
@@ -31,18 +31,18 @@ router.post('/login', async (req, res) => {
     try {
         const user = await User.findOne({ where: { email } });
         if (!user) {
-            return res.status(404).send({ error: 'User non trouvé' });
+            return res.status(404).json({ message: 'utilisateur non trouvé' });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).send({ error: 'Mot de passe invalid' });
+            return res.status(400).json({ message: 'Mot de passe invalide' });
         }
 
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '48h' });
         res.json({ data:user, token:token, messsage:"utilisateur connecté" });
     } catch (error) {
-        res.status(500).json({error});
+        res.status(500).json({message:error.message});
     }
 });
 
@@ -54,7 +54,7 @@ router.patch('/update', authenticateToken, async (req, res) => {
             return res.status(404).send({ error: 'Compte inexsistant' });
         }
         await user.update(req.body);
-        res.json({data:user,message :"Mise ajour du compté réussi"});
+        res.json({data:user,message :"Mise à jour du compte réussi"});
     } catch (error) {
         res.status(400).json({message:error.message});
     }
@@ -65,13 +65,13 @@ router.delete('/delete', authenticateToken, async (req, res) => {
     try {
         const user = await User.findByPk(req.user.id);
         if (!user) {
-            return res.status(404).send({ error: 'User not found' });
+            return res.status(404).send({ error: 'Utilisateur non  trouvé' });
         }
 
         await user.destroy();
-        res.send({ message: 'User deleted' });
+        res.json({ message: 'User deleted' });
     } catch (error) {
-        res.status(500).send(error);
+        res.status(500).json({message:error.message});
     }
 });
 
