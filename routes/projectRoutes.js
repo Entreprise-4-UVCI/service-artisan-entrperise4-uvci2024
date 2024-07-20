@@ -4,7 +4,7 @@ const Project = require('../models/ProjetcModel');
 const authenticateToken = require('../middlewares/auth');
 
 // Créer un nouveau projet
-router.post('/add', authenticateToken, async (req, res) => {
+router.post('/register', authenticateToken, async (req, res) => {
     try {
         const project = await Project.create({ clientId: req.user.id, ...req.body });
         res.status(201).json({data:project, message :"Projet créer avec succès "});
@@ -34,7 +34,7 @@ router.get('/get_projects/category/:categoryId', async (req, res) => {
 });
 
 // Obtenir les projets d'un client
-router.get('/get_project/client/:clientId', authenticateToken, async (req, res) => {
+router.get('/get_projects/client/:clientId', authenticateToken, async (req, res) => {
     try {
         const projects = await Project.findAll({ where: { clientId: req.params.clientId } });
         res.status(200).json({data:projects});

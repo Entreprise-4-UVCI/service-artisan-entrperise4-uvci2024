@@ -24,10 +24,10 @@ const Project = sequelize.define('Project', {
     },
     status: {
         type: DataTypes.ENUM('OPEN', 'PENDIND', 'COMPLETED', 'CANCELLED'),
-        defaultValue: 'Open',
+        defaultValue: 'PENDIND',
     },
     location: {
-        type: DataTypes.GEOMETRY('POINT'),
+        type: DataTypes.STRING,
         allowNull: false,
     },
     minBudget: {
@@ -40,7 +40,7 @@ const Project = sequelize.define('Project', {
     },
     deadline: {
         type: DataTypes.DATEONLY,
-        allowNull: true,
+        allowNull: false,
     },
     createdAt: {
         type: DataTypes.DATE,

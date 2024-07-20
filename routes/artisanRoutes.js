@@ -9,9 +9,21 @@ const Application = require('../models/ApplicationModel');
 const authenticateToken = require('../middlewares/auth');
 const sendEmail = require('../utils/sendEmail');
 
+const generatePassword = (length)=> {
+    var charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let password = "";
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * charset.length);
+        password += charset[randomIndex];
+    }
+    return password;
+}
+
+
 // Créer un nouvel artisan
 router.post('/register-artisan', async (req, res) => {
-    const { email, firstname, lastname, password, phone, address, gender, dateOfBirth, profilePicture, profession, description, services, skills, experienceYears, location, certifications } = req.body;
+    const { email, firstname, lastname, phone, address, gender, dateOfBirth, profilePicture, profession, description, services, skills, experienceYears, location, certifications } = req.body;
+    const password = generatePassword(10);
     const hashedPassword = await bcrypt.hash(password, 10);
     sendEmail(email,"Mot de passe",`Votre mot de passe est le suivant :  <strong>${password}</strong>`);
     try {
@@ -19,7 +31,7 @@ router.post('/register-artisan', async (req, res) => {
             firstname, lastname, email, phone, address, role: 'Artisan', gender, dateOfBirth, profilePicture ,
             profession, description, services, skills, experienceYears, location, certifications
         });
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '48h' });
+        const token = jwt.sign({ id: artisan.id }, process.env.JWT_SECRET, { expiresIn: '48h' });
 
         res.status(201).json({ data: artisan, token: token, message: "Artisan Créer avec succès" });
     } catch (error) {
@@ -28,12 +40,13 @@ router.post('/register-artisan', async (req, res) => {
 });
 
 router.post('/register-client', async (req, res) => {
-    const { email, firstname, lastname, password, phone, address, gender, dateOfBirth, profilePicture, profession, description, services, skills, experienceYears, location, certifications } = req.body;
+    const { email, firstname, lastname, phone, address, gender, dateOfBirth, profilePicture, profession, description, services, skills, experienceYears, location, certifications } = req.body;
+    const password = generatePassword(10);
     const hashedPassword = await bcrypt.hash(password, 10);
     sendEmail(email,"Mot de passe",`Votre mot de passe est le suivant :  <strong>${password}</strong>`);
     try {
         const artisan = await Artisan.create({
-            firstname, lastname, email, phone, address, role: 'Client', gender, dateOfBirth, profilePicture ,
+            firstname, lastname, email,password:hashedPassword, phone, address, role: 'Client', gender, dateOfBirth, profilePicture ,
             profession, description, services, skills, experienceYears, location, certifications
         });
         const token = jwt.sign({ id: artisan.id }, process.env.JWT_SECRET, { expiresIn: '48h' });
