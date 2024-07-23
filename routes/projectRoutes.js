@@ -2,11 +2,19 @@ const express = require('express');
 const router = express.Router();
 const authenticateToken = require('../middlewares/auth');
 const Project = require('../models/ProjetcModel');
+const Category = require('../models/CategoryModel');
 
 // Créer un nouveau projet
 router.post('/register', authenticateToken, async (req, res) => {
     try {
+        const {categoryId} = req.body;
+        const categoryExist= await Category.findOne({ categoryId:categoryId });
+        if(!categoryExist){
+            return res.status(200).json({message:"Categorie n'existe pas"});
+        }
         const project = new Project({ clientId: req.user.id, ...req.body });
+        
+
         await project.save();
         res.status(201).json({ data: project, message: "Projet créé avec succès" });
     } catch (error) {
