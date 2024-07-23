@@ -1,115 +1,102 @@
-const { DataTypes, Model } = require('sequelize');
-const sequelize = require('../database');
+const mongoose = require('mongoose');
 
-class Artisan extends Model {}
-
-Artisan.init({
+const ArtisanSchema = new mongoose.Schema({
     firstname: {
-        type: DataTypes.STRING,
-        allowNull: false
+        type: String,
+        required: false
     },
     lastname: {
-        type: DataTypes.STRING,
-        allowNull: false
+        type: String,
+        required: false
     },
     company: {
-        type: DataTypes.STRING,
-        allowNull: false
+        type: String,
+        required: false
     },
     email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
+        type: String,
+        required: false,
     },
     phone: {
-        type: DataTypes.STRING,
-        allowNull: false
+        type: String,
+        required: false,
     },
     codePostal: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        defaultValue: '225'
+        type: String,
+        required: false,
+        default: '225'
     },
     gender: {
-        type: DataTypes.ENUM('Male', 'Female', 'Other'),
-        defaultValue: 'Male'
+        type: Object,
+        default: 'Male'
     },
     dateOfBirth: {
-        type: DataTypes.DATE
+        type: Date
     },
     profilePicture: {
-        type: DataTypes.STRING
+        type: String
     },
     profession: {
-        type: DataTypes.STRING,
-        allowNull: false
+        type: String,
+        required: false
     },
     address: {
-        type: DataTypes.STRING,
-        allowNull: false
+        type: String,
+        required: false
     },
     role: {
-        type: DataTypes.ENUM('Client', 'Artisan'),
-        allowNull: false
+        type: String,
+        enum: ['Client', 'Artisan'],
+        required: false
     },
     description: {
-        type: DataTypes.TEXT,
-        allowNull: false
+        type: String,
+        required: false
     },
     password: {
-        type: DataTypes.TEXT,
-        allowNull: false
+        type: String,
+        required: false
     },
     services: {
-        type: DataTypes.ARRAY(DataTypes.STRING),
-        allowNull: false
+        type: [String],
+        required: false
     },
     skills: {
-        type: DataTypes.ARRAY(DataTypes.STRING)
+        type: [String]
     },
     experienceYears: {
-        type: DataTypes.INTEGER
+        type: Number
     },
     location: {
-        type: DataTypes.STRING,
-        allowNull: false
+        type: String,
+        required: false
     },
     rating: {
-        type: DataTypes.FLOAT,
-        defaultValue: 0
+        type: Number,
+        default: 0
     },
     certifications: {
-        type: DataTypes.ARRAY(DataTypes.STRING)
+        type: [String]
     },
     availability: {
-        type: DataTypes.ENUM('Available', 'Busy', 'Unavailable'),
-        defaultValue: 'Available'
+        type: String,
+        enum: ['Available', 'Busy', 'Unavailable'],
+        default: 'Available'
     },
     createdAt: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
+        type: Date,
+        default: Date.now
     },
     userId: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: 'UserModels',
-            key: 'id'
-        },
-        onDelete: 'SET NULL',
-        onUpdate: 'CASCADE'
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     },
     categoryId: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: 'CategoryModels',
-            key: 'id'
-        },
-        onDelete: 'SET NULL',
-        onUpdate: 'CASCADE'
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category'
     }
-}, {
-    sequelize,
-    modelName: 'Artisan'
 });
+
+const Artisan = mongoose.model('Artisan', ArtisanSchema);
 
 module.exports = Artisan;

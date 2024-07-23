@@ -1,18 +1,24 @@
-const { Sequelize } = require('sequelize');
-const dotenv = require("dotenv");
+
+
+const  mongooseClient   = require("mongoose");
+const  dotenv =  require("dotenv");
 dotenv.config();
 
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
-    dialect: 'postgres',
-    protocol: 'postgres',
-    password: process.env.PASSWORD_DB,
-    username: process.env.USER_NAME_DB,
-    dialectOptions: {
-        ssl: process.env.USE_SSL === 'true' ? {
-            require: true,
-            rejectUnauthorized: false // Important si vous vous connectez à Heroku Postgres
-        } : false
-    }
-});
+//const url = "mongodb://localhost:20127"
+const url = process.env.MONGO_URI
+mongooseClient.set('strictQuery', false);
+const connectDB = async () => {
+  await mongooseClient.connect(url,
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    },
+  ).then(() => {
+    console.log("Connexion à la base de donnée réussi");
+  }).catch((error) => {
+      console.log("connexion a la base de données réfusés "+error);
+    })
+}
 
-module.exports = sequelize;
+
+module.exports =  connectDB;

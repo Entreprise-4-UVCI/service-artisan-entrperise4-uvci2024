@@ -6,12 +6,9 @@ const authenticateToken = require('../middlewares/auth');
 // Créer une nouvelle candidature
 router.post('/register', authenticateToken, async (req, res) => {
     try {
-        const application = await Application.create({
-            artisanId: req.body.artisanId,
-            projectId: req.body.projectId,
-            ...req.body
-        });
-        res.status(201).json({ data: application, message: "Candidature Envoyé avec succès" });
+        const application = new Application(req.body);
+        await application.save();
+        res.status(201).json({ data: application, message: "Candidature envoyée avec succès" });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
@@ -20,7 +17,7 @@ router.post('/register', authenticateToken, async (req, res) => {
 // Obtenir toutes les candidatures
 router.get('/get_applications', async (req, res) => {
     try {
-        const applications = await Application.findAll();
+        const applications = await Application.find();
         res.status(200).json({ data: applications, message: "Toutes les candidatures" });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -30,8 +27,8 @@ router.get('/get_applications', async (req, res) => {
 // Obtenir les candidatures par projet
 router.get('/get_applications/project/:projectId', async (req, res) => {
     try {
-        const applications = await Application.findAll({ where: { projectId: req.params.projectId } });
-        res.status(200).json({ data: applications, message: "Toutes les canditures pour ce poste " });
+        const applications = await Application.find({ projectId: req.params.projectId });
+        res.status(200).json({ data: applications, message: "Toutes les candidatures pour ce projet" });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -40,8 +37,8 @@ router.get('/get_applications/project/:projectId', async (req, res) => {
 // Obtenir les candidatures d'un artisan
 router.get('/get_applications/artisan/:artisanId', authenticateToken, async (req, res) => {
     try {
-        const applications = await Application.findAll({ where: { artisanId: req.params.artisanId } });
-        res.status(200).json({ data: applications, message: "les canditures d'un artisans" });
+        const applications = await Application.find({ artisanId: req.params.artisanId });
+        res.status(200).json({ data: applications, message: "Les candidatures d'un artisan" });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -50,13 +47,11 @@ router.get('/get_applications/artisan/:artisanId', authenticateToken, async (req
 // Mettre à jour une candidature
 router.patch('/edit/:id', authenticateToken, async (req, res) => {
     try {
-        const application = await Application.findByPk(req.params.id);
+        const application = await Application.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!application) {
-            return res.status(404).send({ error: 'Candidature non trouvé' });
+            return res.status(404).send({ error: 'Candidature non trouvée' });
         }
-
-        await application.update(req.body);
-        res.status(200).json({ data: application, message: "Candidature mis à jour" });
+        res.status(200).json({ data: application, message: "Candidature mise à jour" });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
@@ -65,20 +60,14 @@ router.patch('/edit/:id', authenticateToken, async (req, res) => {
 // Supprimer une candidature
 router.delete('/deleted/:id', authenticateToken, async (req, res) => {
     try {
-        const application = await Application.findByPk(req.params.id);
+        const application = await Application.findByIdAndDelete(req.params.id);
         if (!application) {
-            return res.status(404).send({ error: 'Candidature non trouvé' });
+            return res.status(404).send({ error: 'Candidature non trouvée' });
         }
-
-        await application.destroy();
-        res.status(200).json({ message: 'Candidature supprimé' });
+        res.status(200).json({ message: 'Candidature supprimée' });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
 
-
-
 module.exports = router;
-
-

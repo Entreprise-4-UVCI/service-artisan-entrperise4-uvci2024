@@ -1,60 +1,52 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../database');
-const User = require('./UserModel');
-const Category = require('./CategoryModel');
-const Skill = require('./SkillModel');
-const Artisan = require('./ArtisanModel');
+const mongoose = require('mongoose');
 
-const Project = sequelize.define('Project', {
+const ProjectSchema = new mongoose.Schema({
     clientId: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: Artisan,
-            key: 'id'
-        },
-        allowNull: false,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Artisan',
+        required: true
     },
     title: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        type: String,
+        required: true
     },
     description: {
-        type: DataTypes.TEXT,
-        allowNull: false,
+        type: String,
+        required: true
     },
     status: {
-        type: DataTypes.ENUM('OPEN', 'PENDIND', 'COMPLETED', 'CANCELLED'),
-        defaultValue: 'PENDIND',
+        type: String,
+        enum: ['OPEN', 'PENDING', 'COMPLETED', 'CANCELLED'],
+        default: 'PENDING'
     },
     location: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        type: String,
+        required: true
     },
     minBudget: {
-        type: DataTypes.FLOAT,
-        allowNull: false,
+        type: Number,
+        required: true
     },
     maxBudget: {
-        type: DataTypes.FLOAT,
-        allowNull: false,
+        type: Number,
+        required: true
     },
     deadline: {
-        type: DataTypes.DATEONLY,
-        allowNull: false,
+        type: Date,
+        required: true
     },
     createdAt: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
+        type: Date,
+        default: Date.now
     },
+    categoryId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category'
+    }
 }, {
-    timestamps: false,
+    timestamps: false
 });
 
-Project.belongsTo(Artisan, { foreignKey: 'clientId' });
-Project.belongsTo(Category, { foreignKey: 'categoryId' });
-
-const ProjectSkill = sequelize.define('ProjectSkill', {}, { timestamps: false });
-Project.belongsToMany(Skill, { through: ProjectSkill });
-Skill.belongsToMany(Project, { through: ProjectSkill });
+const Project = mongoose.model('Project', ProjectSchema);
 
 module.exports = Project;

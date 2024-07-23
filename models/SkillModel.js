@@ -1,17 +1,17 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../database');
+const mongoose = require('mongoose');
 
-const Skill = sequelize.define('SkillModel', {
+const SkillSchema = new mongoose.Schema({
     name: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        type: String,
+        required: true
     },
     description: {
-        type: DataTypes.TEXT,
-        allowNull: true,
-    },
+        type: String
+    }
 }, {
-    timestamps: false,
+    timestamps: false
 });
+
+const Skill = mongoose.model('Skill', SkillSchema);
 
 module.exports = Skill;

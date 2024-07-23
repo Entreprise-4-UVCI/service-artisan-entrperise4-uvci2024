@@ -1,46 +1,34 @@
-const { DataTypes, Model } = require('sequelize');
-const sequelize = require('../database');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-class Application extends Model {}
-
-Application.init({
+const applicationSchema = new Schema({
     projectId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'Projects',
-            key: 'id'
-        },
-        onDelete: 'NO ACTION',
-        onUpdate: 'CASCADE'
+        type: Schema.Types.ObjectId,
+        ref: 'Project',
+        required: true
     },
     artisanId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        unique: true,
-        references: {
-            model: 'Artisans',
-            key: 'id'
-        },
-        onDelete: 'NO ACTION',
-        onUpdate: 'CASCADE'
+        type: Schema.Types.ObjectId,
+        ref: 'Artisan',
+        required: true,
+        unique: true
     },
     message: {
-        type: DataTypes.TEXT,
-        allowNull: false
+        type: String,
+        required: true
     },
     status: {
-        type: DataTypes.ENUM('PENDING', 'ACCEPTED', 'REJECTED'),
-        defaultValue: 'PENDING',
-        allowNull: false
+        type: String,
+        enum: ['PENDING', 'ACCEPTED', 'REJECTED'],
+        default: 'PENDING',
+        required: true
     },
     createdAt: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
+        type: Date,
+        default: Date.now
     }
-}, {
-    sequelize,
-    modelName: 'Application'
-});
+},{timestamps:true});
+
+const Application = mongoose.model('Application', applicationSchema);
 
 module.exports = Application;

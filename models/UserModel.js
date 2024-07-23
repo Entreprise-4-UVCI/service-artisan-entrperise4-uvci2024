@@ -1,69 +1,66 @@
+const mongoose = require('mongoose');
 
-const sequelize = require('../database');
-const { DataTypes } = require('sequelize');
-
-const User = sequelize.define('UserModel', {
+const UserSchema = new mongoose.Schema({
     firstname: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        type: String,
+        required: false
     },
     lastname: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        type: String,
+        required: false
     },
     company: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        type: String,
+        required: false
     },
     email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
+        type: String,
+        required: false,
+        unique: true
     },
     password: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        type: String,
+        required: false
     },
     phone: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        type: String,
+        required: false
     },
     codePostal: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        defaultValue:"225"
+        type: String,
+        required: false,
+        default: '225'
     },
     profession: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        type: String,
+        required: false
     },
     address: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        type: String,
+        required: false
     },
     role: {
-        type: DataTypes.ENUM('Admin'),
-        allowNull: false,
+        type: String,
+        enum: ['Admin', 'User'],
+        required: false
     },
     gender: {
-        type: DataTypes.ENUM('Male', 'Female', 'Other'),
-        allowNull: true,
-        defaultValue:"Male"
+        type: String,
+        enum: ['Male', 'Female', 'Other'],
+        default: 'Male'
     },
     dateOfBirth: {
-        type: DataTypes.DATEONLY,
-        allowNull: true,
+        type: Date
     },
     profilePicture: {
-        type: DataTypes.STRING,
-        allowNull: true,
+        type: String
     },
     createdAt: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
-    },
-}, {
-    timestamps: false,
+        type: Date,
+        default: Date.now
+    }
 });
+
+const User = mongoose.model('User', UserSchema);
 
 module.exports = User;

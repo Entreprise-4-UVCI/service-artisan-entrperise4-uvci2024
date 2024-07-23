@@ -12,15 +12,16 @@ router.post('/register', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     try {
-        const user = await User.create({ name, email, password: hashedPassword, phone, address, role });
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const user = new User({ name, email, password: hashedPassword, phone, address, role });
+        await user.save();
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         // Envoyer l'e-mail avec le mot de passe généré
-        await sendEmail(email, 'Bienvenu sur la plateforme', `Ton mot de passe est le suivant : <strong style="height:50px;width:50px"> ${password} <strong>`);
+        await sendEmail(email, 'Bienvenue sur la plateforme', `Ton mot de passe est le suivant : <strong>${password}</strong>`);
 
-        res.status(201).json({ data:user, token:token });
+        res.status(201).json({ data: user, token: token });
     } catch (error) {
-        res.status(400).json({message:error.message});
+        res.status(400).json({ message: error.message });
     }
 });
 
@@ -29,9 +30,9 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const user = await User.findOne({ where: { email } });
+        const user = await User.findOne({ email });
         if (!user) {
-            return res.status(404).json({ message: 'utilisateur non trouvé' });
+            return res.status(404).json({ message: 'Utilisateur non trouvé' });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
@@ -39,39 +40,36 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ message: 'Mot de passe invalide' });
         }
 
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '48h' });
-        res.status(200).json({ data:user, token:token, messsage:"utilisateur connecté" });
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '48h' });
+        res.status(200).json({ data: user, token: token, message: "Utilisateur connecté" });
     } catch (error) {
-        res.status(500).json({message:error.message});
+        res.status(500).json({ message: error.message });
     }
 });
 
 // Mettre à jour les informations de l'utilisateur
 router.patch('/update', authenticateToken, async (req, res) => {
     try {
-        const user = await User.findByPk(req.user.id);
+        const user = await User.findByIdAndUpdate(req.user.id, req.body, { new: true });
         if (!user) {
-            return res.status(404).send({ error: 'Compte inexsistant' });
+            return res.status(404).send({ error: 'Compte inexistant' });
         }
-        await user.update(req.body);
-        res.status(200).json({data:user,message :"Mise à jour du compte réussi"});
+        res.status(200).json({ data: user, message: "Mise à jour du compte réussie" });
     } catch (error) {
-        res.status(400).json({message:error.message});
+        res.status(400).json({ message: error.message });
     }
 });
 
 // Supprimer un utilisateur
 router.delete('/delete', authenticateToken, async (req, res) => {
     try {
-        const user = await User.findByPk(req.user.id);
+        const user = await User.findByIdAndDelete(req.user.id);
         if (!user) {
-            return res.status(404).send({ error: 'Utilisateur non  trouvé' });
+            return res.status(404).send({ error: 'Utilisateur non trouvé' });
         }
-
-        await user.destroy();
-        res.status(200).json({ message: 'utilisateur supprimer' });
+        res.status(200).json({ message: 'Utilisateur supprimé' });
     } catch (error) {
-        res.status(500).json({message:error.message});
+        res.status(500).json({ message: error.message });
     }
 });
 

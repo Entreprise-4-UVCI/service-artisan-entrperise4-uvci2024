@@ -1,48 +1,38 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../database');
-const User = require('./UserModel');
-const Artisan = require('./ArtisanModel');
+const mongoose = require('mongoose');
 
-const Review = sequelize.define('Review', {
+const ReviewSchema = new mongoose.Schema({
     clientId: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: User,
-            key: 'id'
-        },
-        allowNull: false,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     },
     artisanId: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: Artisan,
-            key: 'id'
-        },
-        allowNull: false,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Artisan',
+        required: true
     },
     rating: {
-        type: DataTypes.FLOAT,
-        allowNull: false,
-        defaultValue: 1
+        type: Number,
+        required: true,
+        default: 1
     },
     comment: {
-        type: DataTypes.TEXT,
-        allowNull: false,
+        type: String,
+        required: true
     },
     access: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: true
+        type: Boolean,
+        required: true,
+        default: true
     },
     createdAt: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
-    },
+        type: Date,
+        default: Date.now
+    }
 }, {
-    timestamps: false,
+    timestamps: false
 });
 
-Review.belongsTo(User, { foreignKey: 'clientId' });
-Review.belongsTo(Artisan, { foreignKey: 'artisanId' });
+const Review = mongoose.model('Review', ReviewSchema);
 
 module.exports = Review;
