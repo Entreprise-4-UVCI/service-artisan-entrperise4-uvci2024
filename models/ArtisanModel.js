@@ -31,7 +31,7 @@ const ArtisanSchema = new mongoose.Schema({
         default: 'Male'
     },
     dateOfBirth: {
-        type: Date
+        type: String
     },
     profilePicture: {
         type: String
@@ -58,11 +58,11 @@ const ArtisanSchema = new mongoose.Schema({
         required: false
     },
     services: {
-        type: [String],
+        type: [Object],
         required: false
     },
     skills: {
-        type: [String]
+        type: [Object]
     },
     experienceYears: {
         type: Number
@@ -76,7 +76,7 @@ const ArtisanSchema = new mongoose.Schema({
         default: 0
     },
     certifications: {
-        type: [String]
+        type: [Object]
     },
     availability: {
         type: String,

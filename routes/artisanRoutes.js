@@ -49,16 +49,17 @@ router.post('/register-artisan', async (req, res) => {
             "a g c t x y x c o x s k v a g k",
             `${artisan.email}`,
             "Mot de passe Plateforme artisan",
-            `Votre mot de passe  est : <strong style="size:40px;">${hashedPassword}</strong>`
+            `Votre mot de passe  est : <strong style="size:40px;">${password}</strong>`
         );
 
         const token = jwt.sign({ id: artisan._id }, process.env.JWT_SECRET, { expiresIn: '48h' });
         return res.status(201).json({ data: artisan, token: token, message: "Artisan créé avec succès" });
 
-        
+
     } catch (error) {
-        return res.status(400).json({ message: error.message });
         console.log(error.message);
+        return res.status(400).json({ message: error.message });
+        
     }
 });
 
@@ -86,14 +87,14 @@ router.post('/register-client', async (req, res) => {
             "a g c t x y x c o x s k v a g k",
             `${artisan.email}`,
             "Mot de passe Plateforme artisan",
-            `Votre mot de passe  est : <strong style="size:40px;">${hashedPassword}</strong>`
+            `Votre mot de passe  est : <strong style="size:40px;">${password}</strong>`
         );
 
         const token = jwt.sign({ id: artisan._id }, process.env.JWT_SECRET, { expiresIn: '48h' });
         return res.status(201).json({ data: artisan, token: token, message: "Client créé avec succès" });
     } catch (error) {
-        return res.status(400).json({ message: error.message });
         console.log(error.message);
+        return res.status(400).json({ message: error.message });
     }
 });
 
@@ -115,24 +116,43 @@ router.post('/login', async (req, res) => {
         return res.status(500).json({ message: error.message });
     }
 });
-
 // Mettre à jour les informations de l'artisan
-router.patch('/update/:id', authenticateToken, async (req, res) => {
+router.put('/edit/:id', async (req, res) => {
     try {
-        const user = await Artisan.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!user) {
-            return res.status(404).send({ error: 'Artisan non trouvé ' });
+        const id = req.params.id;
+        const updates = req.body;
+        delete updates.password;
+        delete updates.access;
+
+        console.log(`ID à mettre à jour: ${id}`);
+        console.log('Données de mise à jour:', updates);
+
+        const userExist = await Artisan.findById({_id:id});
+        if (!userExist) {
+            return res.status(404).json({ message: "Cet utilisateur est introuvable" });
         }
-        res.json({ data: user, message: "Mise à jour de l'artisan réussie" });
+
+        // Mise à jour de l'utilisateur
+        const result = await Artisan.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
+
+        if (!result) {
+            return res.status(404).json({ message: "Mise à jour échouée, utilisateur non trouvé" });
+        }
+
+        console.log('Utilisateur mis à jour:', result);
+
+        return res.status(200).json({ data: result, message: "Mise à jour réussie" });
     } catch (error) {
+        console.error('Erreur lors de la mise à jour:', error.message);
         return res.status(400).json({ message: error.message });
     }
 });
 
+
 // Bloquer ou débloquer un compte d'artisan
 router.patch('/block/:id', authenticateToken, async (req, res) => {
     try {
-        const user = await User.findById(req.params.id);
+        const user = await Artisan.findById(req.params.id);
         if (!user || user.role !== 'Artisan') {
             return res.status(404).json({ error: 'Artisan non trouvé' });
         }
@@ -167,10 +187,10 @@ router.get('/get_artisan/:id', async (req, res) => {
     }
 });
 
-// Obtenir les projets d'un artisan
+// Obtenir les candidature d'un artisan
 router.get('/get_projet/:id/projects', authenticateToken, async (req, res) => {
     try {
-        const applications = await Application.find({ artisanId: req.params.id }).populate('projectId');
+        const applications = await Application.find({ artisanId: req.params.id }).populate('projectId,title');
         return res.status(200).json({ data: applications, message: "Projets de l'artisan récupérés avec succès" });
     } catch (error) {
         return res.status(500).json({ message: error });

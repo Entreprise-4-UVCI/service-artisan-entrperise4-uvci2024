@@ -16,6 +16,7 @@ const authenticateToken = (req, res, next) => {
         req.user = verified;
         next();
     } catch (error) {
+        console.log("Clé non valide")
         res.status(400).send({ error: 'Clé non valide' });
     }
 };
