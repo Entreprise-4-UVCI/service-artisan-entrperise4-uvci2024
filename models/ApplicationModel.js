@@ -1,43 +1,46 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../database');
-const Project = require('./ProjetcModel');
-const Artisan = require('./ArtisanModel');
 
-const Application = sequelize.define('Application', {
+class Application extends Model {}
+
+Application.init({
     projectId: {
         type: DataTypes.INTEGER,
+        allowNull: false,
         references: {
-            model: Project,
+            model: 'Projects',
             key: 'id'
         },
-        allowNull: false,
+        onDelete: 'NO ACTION',
+        onUpdate: 'CASCADE'
     },
     artisanId: {
         type: DataTypes.INTEGER,
+        allowNull: false,
+        unique: true,
         references: {
-            model: Artisan,
+            model: 'Artisans',
             key: 'id'
         },
-        allowNull: false,
-        unique:true
+        onDelete: 'NO ACTION',
+        onUpdate: 'CASCADE'
     },
     message: {
         type: DataTypes.TEXT,
-        allowNull: false,
+        allowNull: false
     },
     status: {
         type: DataTypes.ENUM('PENDING', 'ACCEPTED', 'REJECTED'),
-        defaultValue: 'Pending',
+        defaultValue: 'PENDING',
+        allowNull: false
     },
     createdAt: {
         type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
-    },
+        defaultValue: DataTypes.NOW
+    }
 }, {
-    timestamps: false,
+    sequelize,
+    modelName: 'Application'
 });
-
-Application.belongsTo(Project, { foreignKey: 'projectId' });
-Application.belongsTo(Artisan, { foreignKey: 'artisanId' });
 
 module.exports = Application;

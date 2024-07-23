@@ -1,110 +1,115 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../database');
-const User = require('./UserModel');
-const Category = require('./CategoryModel');
-const Skill = require('./SkillModel');
 
-const Artisan = sequelize.define('Artisan', {
+class Artisan extends Model {}
+
+Artisan.init({
     firstname: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
     },
     lastname: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
     },
     company: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
     },
     email: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
+        unique: true
     },
     phone: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
     },
     codePostal: {
         type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: "225"
+        defaultValue: '225'
     },
     gender: {
         type: DataTypes.ENUM('Male', 'Female', 'Other'),
-        allowNull: true,
-        defaultValue: "Male"
+        defaultValue: 'Male'
     },
     dateOfBirth: {
-        type: DataTypes.DATEONLY,
-        allowNull: true,
+        type: DataTypes.DATE
     },
     profilePicture: {
-        type: DataTypes.STRING,
-        allowNull: true,
+        type: DataTypes.STRING
     },
     profession: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
     },
     address: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
     },
     role: {
         type: DataTypes.ENUM('Client', 'Artisan'),
-        allowNull: false,
+        allowNull: false
     },
     description: {
         type: DataTypes.TEXT,
-        allowNull: false,
+        allowNull: false
     },
     password: {
         type: DataTypes.TEXT,
-        allowNull: false,
+        allowNull: false
     },
     services: {
         type: DataTypes.ARRAY(DataTypes.STRING),
-        allowNull: false,
+        allowNull: false
     },
     skills: {
-        type: DataTypes.ARRAY(DataTypes.STRING),
-        allowNull: true,
+        type: DataTypes.ARRAY(DataTypes.STRING)
     },
     experienceYears: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
+        type: DataTypes.INTEGER
     },
     location: {
-        type: DataTypes.GEOMETRY('POINT'),
-        allowNull: false,
+        type: DataTypes.STRING,
+        allowNull: false
     },
     rating: {
         type: DataTypes.FLOAT,
-        defaultValue: 0,
+        defaultValue: 0
     },
     certifications: {
-        type: DataTypes.ARRAY(DataTypes.STRING),
-        allowNull: true,
+        type: DataTypes.ARRAY(DataTypes.STRING)
     },
     availability: {
         type: DataTypes.ENUM('Available', 'Busy', 'Unavailable'),
-        defaultValue: 'Available',
+        defaultValue: 'Available'
     },
     createdAt: {
         type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
+        defaultValue: DataTypes.NOW
     },
+    userId: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: 'UserModels',
+            key: 'id'
+        },
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE'
+    },
+    categoryId: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: 'CategoryModels',
+            key: 'id'
+        },
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE'
+    }
 }, {
-    timestamps: false,
+    sequelize,
+    modelName: 'Artisan'
 });
-
-Artisan.belongsTo(User, { foreignKey: 'userId' });
-Artisan.belongsTo(Category, { foreignKey: 'categoryId' });
-
-const ArtisanSkill = sequelize.define('ArtisanSkill', {}, { timestamps: false });
-Artisan.belongsToMany(Skill, { through: ArtisanSkill });
-Skill.belongsToMany(Artisan, { through: ArtisanSkill });
 
 module.exports = Artisan;
