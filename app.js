@@ -37,11 +37,13 @@ const userRoutes = require('./routes/userRoutes');
 const projectRoutes = require('./routes/projectRoutes');
 const applicationRoutes = require('./routes/applicationRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
+const skillRoutes = require('./routes/skillRoutes');
 const authenticateToken = require('./middlewares/auth');
 
 // Route de test pour vérifier que le serveur fonctionne
-app.get("/",authenticateToken, (req, res) => {
-    res.json({ message: "API Artisan web availability" });
+app.get("/", authenticateToken, (req, res) => {
+  res.json({ message: "API Artisan web availability" });
 });
 
 // Utilisation des routes
@@ -50,12 +52,14 @@ app.use('/api/v1/artisan', artisanRoutes);
 app.use('/api/v1/project', projectRoutes);
 app.use('/api/v1/application', applicationRoutes);
 app.use('/api/v1/review', reviewRoutes);
+app.use('/api/v1/skill', skillRoutes);
+app.use('/api/v1/category', categoryRoutes);
 
 // Connectez-vous à MongoDB et démarrez le serveur
 connectDB().then(() => {
-    app.listen(port, () => {
-        console.log(`Démarrage du serveur sur le port ${port}`);
-    });
+  app.listen(port, () => {
+    console.log(`Démarrage du serveur sur le port ${port}`);
+  });
 }).catch(error => {
-    console.error('Impossible de connecter la base de données:', error);
+  console.error('Impossible de connecter la base de données:', error);
 });

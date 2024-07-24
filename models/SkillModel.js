@@ -17,7 +17,7 @@ const Skill = mongoose.model('Skill', SkillSchema);
 
 
 
-const createCategoryDefault = async (item) => {
+const createSkillsDefault = async (item) => {
     const newadmin = new Skill({
         name: item,
     });
