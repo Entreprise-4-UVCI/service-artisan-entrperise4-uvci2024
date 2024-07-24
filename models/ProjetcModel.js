@@ -21,7 +21,7 @@ const ProjectSchema = new mongoose.Schema({
     },
     location: {
         type: String,
-        required: true
+        required: false
     },
     minBudget: {
         type: Number,
@@ -39,9 +39,11 @@ const ProjectSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    categoryId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Category'
+    skills: {
+        type: [Object]
+    },
+    category: {
+        type:Object
     }
 }, {
     timestamps: false

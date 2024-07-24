@@ -7,14 +7,7 @@ const Category = require('../models/CategoryModel');
 // Créer un nouveau projet
 router.post('/register', authenticateToken, async (req, res) => {
     try {
-        const {categoryId} = req.body;
-        const categoryExist= await Category.findOne({ categoryId:categoryId });
-        if(!categoryExist){
-            return res.status(200).json({message:"Categorie n'existe pas"});
-        }
         const project = new Project({ clientId: req.user.id, ...req.body });
-        
-
         await project.save();
         res.status(201).json({ data: project, message: "Projet créé avec succès" });
     } catch (error) {
@@ -35,7 +28,7 @@ router.get('/get_projects', async (req, res) => {
 // Obtenir les projets par catégorie
 router.get('/get_projects/category/:categoryId', async (req, res) => {
     try {
-        const projects = await Project.find({ categoryId: req.params.categoryId });
+        const projects = await Project.find({ category: req.params.categoryId });
         res.status(200).json({ data: projects });
     } catch (error) {
         res.status(500).json({ message: error.message });
