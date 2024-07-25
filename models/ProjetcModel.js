@@ -2,13 +2,11 @@ const mongoose = require('mongoose');
 
 const ProjectSchema = new mongoose.Schema({
     clientId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Artisan',
-        required: true
+       type:String
     },
     title: {
         type: String,
-        required: true
+        required: true,
     },
     description: {
         type: String,

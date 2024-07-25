@@ -4,7 +4,7 @@ const Application = require('../models/ApplicationModel');
 const authenticateToken = require('../middlewares/auth');
 
 // Créer une nouvelle candidature
-router.post('/register', authenticateToken, async (req, res) => {
+router.post('/register', async (req, res) => {
     try {
         const application = new Application(req.body);
         await application.save();
