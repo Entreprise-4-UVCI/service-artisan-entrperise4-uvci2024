@@ -7,6 +7,8 @@ const authenticateToken = require('../middlewares/auth');
 router.post('/register', async (req, res) => {
     try {
         const application = new Application(req.body);
+        application.status ="PENDING";
+        
         await application.save();
         return res.status(201).json({ data: application, message: "Candidature envoyée avec succès" });
     } catch (error) {
@@ -16,8 +18,8 @@ router.post('/register', async (req, res) => {
 
 
 
-// Accepté
-router.post('/register/:id', async (req, res) => {
+// Accepted
+router.post('/accepted/:id', async (req, res) => {
     try {
         const idApplication =  req.params.id;
 
@@ -28,8 +30,29 @@ router.post('/register/:id', async (req, res) => {
         applicationExist.status = "ACCEPTED" ;
 
         await applicationExist.save();
-        
+
         return res.status(200).json({ data: applicationExist, message: "Candidature Accepté avec succès" });
+    } catch (error) {
+        return res.status(400).json({ message: error.message });
+    }
+});
+
+
+
+// Reject 
+router.post('/reject/:id', async (req, res) => {
+    try {
+        const idApplication =  req.params.id;
+
+        const applicationExist = await Application({_id:idApplication});
+        if(applicationExist){
+            return res.status(410).json({ message:"Candidature non trouvé"});
+        }
+        applicationExist.status = "REJECTED" ;
+
+        await applicationExist.save();
+
+        return res.status(200).json({ data: applicationExist, message: "Candidature Réjété avec succès" });
     } catch (error) {
         return res.status(400).json({ message: error.message });
     }
@@ -67,7 +90,7 @@ router.get('/get_applications/project/:projectId', async (req, res) => {
             path: 'artisanId',
             select: 'firstname lastname phone codePostal email' // specify the fields you want
         });
-
+        return res.status(200).json({data:applications,message:"Recupérer tout les candidation d'un project"});
 
     } catch (error) {
         res.status(500).json({ message: error.message });
