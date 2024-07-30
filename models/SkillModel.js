@@ -138,9 +138,9 @@ const skillsList = [
 ];
 
 // skills
-for (var item of skillsList) {
-    createSkillsDefault(item);
-}
+// for (var item of skillsList) {
+//     createSkillsDefault(item);
+// }
 
 
 module.exports = Skill;

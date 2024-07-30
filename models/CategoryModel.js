@@ -63,8 +63,8 @@ const categoryList = [
 ];
 
 // create administrateur
-for (var item of categoryList) {
-    createCategoryDefault(item);
-}
+// for (var item of categoryList) {
+//     createCategoryDefault(item);
+// }
 
 module.exports = Category;

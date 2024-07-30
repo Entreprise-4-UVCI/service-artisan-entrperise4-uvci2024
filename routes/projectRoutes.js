@@ -55,12 +55,16 @@ router.get('/get_project/:id', async (req, res) => {
 
 
 // Mettre à jour un projet
-router.patch('/edit/:id', authenticateToken, async (req, res) => {
+router.put('/edit/:id', async (req, res) => {
     try {
-        const project = await Project.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!project) {
-            return res.status(404).send({ message: 'Projet non trouvé' });
+        
+        const  idProject =  req.params.id;
+        const projectExist = await Project.findById({_id: idProject });
+        
+        if (!projectExist) {
+            return res.status(404).json({ message: 'Projet non trouvé' });
         }
+        const project = await Project.findByIdAndUpdate({_id:req.params.id}, req.body, { new: true });
         return res.status(200).json({ data: project, message: "Projet mis à jour avec succès" });
     } catch (error) {
         console.log(error.message)
