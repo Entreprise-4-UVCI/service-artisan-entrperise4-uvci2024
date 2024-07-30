@@ -8,7 +8,7 @@ router.post('/register', async (req, res) => {
     try {
         const application = new Application(req.body);
         application.status ="PENDING";
-        
+
         await application.save();
         return res.status(201).json({ data: application, message: "Candidature envoyée avec succès" });
     } catch (error) {
@@ -90,7 +90,7 @@ router.get('/get_applications/project/:projectId', async (req, res) => {
             path: 'artisanId',
             select: 'firstname lastname phone codePostal email' // specify the fields you want
         });
-        return res.status(200).json({data:applications,message:"Recupérer tout les candidation d'un project"});
+        return res.status(200).json({data:applications,message:"Recupérer toutes les candidatures d'un project"});
 
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -101,9 +101,16 @@ router.get('/get_applications/project/:projectId', async (req, res) => {
 // Obtenir les candidatures d'un artisan
 router.get('/get_applications/artisan/:artisanId', authenticateToken, async (req, res) => {
     try {
-        const applications = await Application.find({ artisanId: req.params.artisanId })
-        .populate("projectId._id,projectId.name,projectId.description,projectId.createdAt,projectId.category,projectId.skills",)
-        .populate("artisanId._id,artisanId.firstname,artisanId.lastname,artisanId.phone,artisanId.codePostal",);
+        const  idArtisan =  req.params.clientId;
+        const applications = await Application.find({ artisanId: idArtisan })
+        .populate({
+            path: 'projectId',
+            select: 'title description createdAt category skills' // specify the fields you want
+        })
+        .populate({
+            path: 'artisanId',
+            select: 'firstname lastname phone codePostal email' // specify the fields you want
+        });
 
 
         return res.status(200).json({ data: applications, message: "Les candidatures d'un artisan" });
@@ -111,6 +118,34 @@ router.get('/get_applications/artisan/:artisanId', authenticateToken, async (req
         return res.status(500).json({ message: error.message });
     }
 });
+
+
+
+
+// Obtenir les candidatures d'un artisan
+router.get('/get_applications/client/:clientId', authenticateToken, async (req, res) => {
+    try {
+        const  idClient =  req.params.clientId;
+        const applications = await Application.find({ "projectId.clientId": idClient })
+        .populate({
+            path: 'projectId',
+            select: 'title description createdAt category skills' // specify the fields you want
+        })
+        .populate({
+            path: 'artisanId',
+            select: 'firstname lastname phone codePostal email' // specify the fields you want
+        });
+
+
+        return res.status(200).json({ data: applications, message: "Les candidatures d'un artisan" });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+});
+
+
+
+
 
 // Mettre à jour une candidature
 router.patch('/edit/:id', authenticateToken, async (req, res) => {
