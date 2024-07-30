@@ -12,7 +12,7 @@ router.post('/register', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     try {
-        const user = new User({ name, email, password: hashedPassword, phone, address, role });
+        const user = new User({ name, email, password: hashedPassword, phone, address, role }).select('-password');
         await user.save();
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
@@ -30,7 +30,7 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email }).select('-password');;
         if (!user) {
             return res.status(404).json({ message: 'Utilisateur non trouvé' });
         }
@@ -50,7 +50,7 @@ router.post('/login', async (req, res) => {
 // Mettre à jour les informations de l'utilisateur
 router.patch('/update', authenticateToken, async (req, res) => {
     try {
-        const user = await User.findByIdAndUpdate(req.user.id, req.body, { new: true });
+        const user = await User.findByIdAndUpdate(req.user.id, req.body, { new: true }).select('-password');
         if (!user) {
             return res.status(404).send({ error: 'Compte inexistant' });
         }
@@ -63,7 +63,7 @@ router.patch('/update', authenticateToken, async (req, res) => {
 // Supprimer un utilisateur
 router.delete('/delete', authenticateToken, async (req, res) => {
     try {
-        const user = await User.findByIdAndDelete(req.user.id);
+        const user = await User.findByIdAndDelete(req.user.id).select('-password');
         if (!user) {
             return res.status(404).send({ error: 'Utilisateur non trouvé' });
         }

@@ -84,7 +84,7 @@ router.get('/get_applications/project/:projectId', async (req, res) => {
         const applications = await Application.find({ projectId: req.params.projectId })
         .populate({
             path: 'projectId',
-            select: 'title description createdAt category skills' // specify the fields you want
+            select: 'title description minBudget maxBudget deadline createdAt category skills' // specify the fields you want
         })
         .populate({
             path: 'artisanId',
@@ -99,13 +99,13 @@ router.get('/get_applications/project/:projectId', async (req, res) => {
 
 
 // Obtenir les candidatures d'un artisan
-router.get('/get_applications/artisan/:artisanId', authenticateToken, async (req, res) => {
+router.get('/get_applications/artisan/:artisanId', async (req, res) => {
     try {
         const  idArtisan =  req.params.clientId;
         const applications = await Application.find({ artisanId: idArtisan })
         .populate({
             path: 'projectId',
-            select: 'title description createdAt category skills' // specify the fields you want
+            select: 'title description minBudget maxBudget deadline createdAt category skills' // specify the fields you want
         })
         .populate({
             path: 'artisanId',
@@ -122,23 +122,38 @@ router.get('/get_applications/artisan/:artisanId', authenticateToken, async (req
 
 
 
-// Obtenir les candidatures d'un artisan
-router.get('/get_applications/client/:clientId', authenticateToken, async (req, res) => {
+router.get('/get_applications/client/:clientId', async (req, res) => {
     try {
-        const  idClient =  req.params.clientId;
-        const applications = await Application.find({ "projectId.clientId": idClient })
-        .populate({
-            path: 'projectId',
-            select: 'title description createdAt category skills' // specify the fields you want
-        })
-        .populate({
-            path: 'artisanId',
-            select: 'firstname lastname phone codePostal email' // specify the fields you want
-        });
+        const idClient = req.params.clientId;
 
+        // Debug log to verify the client ID being searched
+        console.log(`Fetching applications for client ID: ${idClient}`);
 
-        return res.status(200).json({ data: applications, message: "Les candidatures d'un artisan" });
+        // Find applications where the project's clientId matches the provided idClient
+        const applications = await Application.find()
+            .populate({
+                path: 'projectId',
+                match: { clientId: idClient }, // Filter projects by clientId
+                select: 'title description minBudget maxBudget deadline createdAt category skills' // Specify the fields to return
+            })
+            .populate({
+                path: 'artisanId',
+                select: 'firstname lastname phone codePostal email' // Specify the fields to return
+            })
+            .exec();
+
+        // Debug log to see the applications before filtering
+        console.log('Applications before filtering:', applications);
+
+        // Filter out applications where the projectId is null due to the match condition
+        const filteredApplications = applications.filter(app => app.projectId !== null);
+
+        // Debug log to see the filtered applications
+        console.log('Filtered Applications:', filteredApplications);
+
+        return res.status(200).json({ data: filteredApplications, message: "Applications by client ID" });
     } catch (error) {
+        console.error('Error fetching applications:', error.message);
         return res.status(500).json({ message: error.message });
     }
 });
@@ -159,6 +174,7 @@ router.patch('/edit/:id', authenticateToken, async (req, res) => {
         return res.status(400).json({ message: error.message });
     }
 });
+
 
 // Supprimer une candidature
 router.delete('/deleted/:id', authenticateToken, async (req, res) => {
