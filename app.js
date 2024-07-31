@@ -39,12 +39,15 @@ const applicationRoutes = require('./routes/applicationRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const skillRoutes = require('./routes/skillRoutes');
+const chatRoutes = require('./routes/chatRoutes');
 const authenticateToken = require('./middlewares/auth');
 
 // Route de test pour vérifier que le serveur fonctionne
 app.get("/", authenticateToken, (req, res) => {
   res.json({ message: "API Artisan web availability" });
 });
+
+
 
 // Utilisation des routes
 app.use('/api/v1/user', userRoutes);
@@ -54,6 +57,10 @@ app.use('/api/v1/application', applicationRoutes);
 app.use('/api/v1/review', reviewRoutes);
 app.use('/api/v1/skill', skillRoutes);
 app.use('/api/v1/category', categoryRoutes);
+app.use('/api/v1/chat', chatRoutes);
+
+
+
 
 // Connectez-vous à MongoDB et démarrez le serveur
 connectDB().then(() => {
