@@ -108,6 +108,7 @@ router.post('/login', async (req, res) => {
         }
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
+            console.log("Mot de passe non valide "+req.body.password)
             return res.status(400).json({ message: 'Mot de passe non valide' });
         }
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '48h' });

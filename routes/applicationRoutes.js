@@ -72,7 +72,7 @@ router.get('/get_applications', async (req, res) => {
             select: 'firstname lastname phone codePostal email' // specify the fields you want
         });
 
-        return res.status(200).json({ data: applications, message: "Toutes les candidatures" });
+        return res.status(200).json({ data: applications.reverse(), message: "Toutes les candidatures" });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -90,7 +90,7 @@ router.get('/get_applications/project/:projectId', async (req, res) => {
             path: 'artisanId',
             select: 'firstname lastname phone codePostal email' // specify the fields you want
         });
-        return res.status(200).json({data:applications,message:"Recupérer toutes les candidatures d'un project"});
+        return res.status(200).json({data:applications.reverse(),message:"Recupérer toutes les candidatures d'un project"});
 
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -101,7 +101,7 @@ router.get('/get_applications/project/:projectId', async (req, res) => {
 // Obtenir les candidatures d'un artisan
 router.get('/get_applications/artisan/:artisanId', async (req, res) => {
     try {
-        const  idArtisan =  req.params.clientId;
+        const  idArtisan =  req.params.artisanId;
         const applications = await Application.find({ artisanId: idArtisan })
         .populate({
             path: 'projectId',
@@ -113,7 +113,7 @@ router.get('/get_applications/artisan/:artisanId', async (req, res) => {
         });
 
 
-        return res.status(200).json({ data: applications, message: "Les candidatures d'un artisan" });
+        return res.status(200).json({ data: applications.reverse(), message: "Les candidatures d'un artisan" });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -130,28 +130,21 @@ router.get('/get_applications/client/:clientId', async (req, res) => {
         console.log(`Fetching applications for client ID: ${idClient}`);
 
         // Find applications where the project's clientId matches the provided idClient
-        const applications = await Application.find()
+        const applications = await Application.find({clientId:idClient})
             .populate({
-                path: 'projectId',
-                match: { clientId: idClient }, // Filter projects by clientId
+                path: 'projectId', // Filter projects by clientId
                 select: 'title description minBudget maxBudget deadline createdAt category skills' // Specify the fields to return
             })
             .populate({
                 path: 'artisanId',
                 select: 'firstname lastname phone codePostal email' // Specify the fields to return
             })
-            .exec();
 
-        // Debug log to see the applications before filtering
-        console.log('Applications before filtering:', applications);
-
-        // Filter out applications where the projectId is null due to the match condition
-        const filteredApplications = applications.filter(app => app.projectId !== null);
 
         // Debug log to see the filtered applications
-        console.log('Filtered Applications:', filteredApplications);
+        console.log('Filtered Applications:', applications);
 
-        return res.status(200).json({ data: filteredApplications, message: "Applications by client ID" });
+        return res.status(200).json({ data: applications.reverse(), message: "Applications by client ID" });
     } catch (error) {
         console.error('Error fetching applications:', error.message);
         return res.status(500).json({ message: error.message });

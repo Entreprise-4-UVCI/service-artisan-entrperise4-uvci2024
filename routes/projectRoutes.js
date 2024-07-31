@@ -3,6 +3,7 @@ const router = express.Router();
 const authenticateToken = require('../middlewares/auth');
 const Project = require('../models/ProjetcModel');
 const Category = require('../models/CategoryModel');
+const Application = require('../models/ApplicationModel');
 
 // Créer un nouveau projet
 router.post('/register', async (req, res) => {
@@ -20,7 +21,7 @@ router.post('/register', async (req, res) => {
 router.get('/get_projects', async (req, res) => {
     try {
         const projects = await Project.find();
-        return res.status(200).json({ data: projects, message: "Tous les projets récupérés avec succès" });
+        return res.status(200).json({ data: projects.reverse(), message: "Tous les projets récupérés avec succès" });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -31,12 +32,40 @@ router.get('/get_projects', async (req, res) => {
 router.get('/get_projects/client/:clientId', async (req, res) => {
     try {
         const projects = await Project.find({ clientId: req.params.clientId });
-        return res.status(200).json({ data: projects });
+        return res.status(200).json({ data: projects.reverse() });
     } catch (error) {
         console.log(error.message)
         return res.status(500).json({ message: error.message });
     }
 });
+
+
+router.get('/get_projects_for_artisan/:artisanId', async (req, res) => {
+    try {
+        const artisanId = req.params.artisanId;
+
+        // Fetch all applications by the artisan
+        const applications = await Application.find({ artisanId:artisanId });
+
+        // Extract project IDs from applications
+        const appliedProjectIds = applications.map(app => app.projectId);
+
+        // Fetch all projects
+        const allProjects = await Project.find({});
+
+        // Filter projects that have been applied for by the artisan
+        const appliedProjects = allProjects.filter(project => 
+            appliedProjectIds.includes(project._id.toString())
+        );
+
+        return res.status(200).json({ data: appliedProjects, message: "Projects applied by the artisan" });
+    } catch (error) {
+        console.error('Error fetching projects for artisan:', error.message);
+        return res.status(500).json({ message: error.message });
+    }
+});
+
+
 
 
 

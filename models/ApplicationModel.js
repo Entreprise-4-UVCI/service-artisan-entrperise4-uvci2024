@@ -11,8 +11,14 @@ const applicationSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Artisan',
         required: true,
-        unique: true
     },
+    
+    clientId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Artisan',
+        required: true,
+    },
+    
     message: {
         type: String,
         required: true
