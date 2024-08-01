@@ -48,15 +48,18 @@ router.get('/get_projects_for_artisan/:artisanId', async (req, res) => {
         const applications = await Application.find({ artisanId:artisanId });
 
         // Extract project IDs from applications
-        const appliedProjectIds = applications.map(app => app.projectId);
+        const appliedProjectIds = applications.map(app => app.projectId.toString());
+        // console.log(appliedProjectIds);
 
         // Fetch all projects
         const allProjects = await Project.find({});
 
+        // console.log(allProjects);
         // Filter projects that have been applied for by the artisan
         const appliedProjects = allProjects.filter(project => 
             appliedProjectIds.includes(project._id.toString())
         );
+        // console.log(appliedProjects);
 
         return res.status(200).json({ data: appliedProjects, message: "Projects applied by the artisan" });
     } catch (error) {
