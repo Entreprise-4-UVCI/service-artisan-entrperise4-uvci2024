@@ -94,7 +94,25 @@ const ArtisanSchema = new mongoose.Schema({
     categoryId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category'
+    },
+
+
+
+    // chat
+    conversations: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'conversations'
+    }],
+    online: {
+        type: Boolean,
+        default: false
+    },
+    lastSeen: {
+        type: Date,
+        default: Date.now
     }
+},{
+    timestamps:true 
 });
 
 const Artisan = mongoose.model('Artisan', ArtisanSchema);

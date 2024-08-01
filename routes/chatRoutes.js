@@ -8,8 +8,8 @@ router.post('/create_conversation', async (req, res) => {
     const { senderId, receiverId } = req.body;
     try {
         // Vérifier si les utilisateurs existent
-        const sender = await Artisan.findById({senderId});
-        const receiver = await Artisan.findById(receiverId);
+        const sender = await Artisan.findById({_id:senderId});
+        const receiver = await Artisan.findById({_id:receiverId});
         if (!sender || !receiver) {
             return res.status(404).json({ message: 'Utilisateur introuvable' });
         }
@@ -25,6 +25,7 @@ router.post('/create_conversation', async (req, res) => {
                 participants: [senderId, receiverId]
             });
             await conversation.save();
+            
 
             // Mettre à jour la liste des conversations des utilisateurs
             sender.conversations.push(conversation._id);
@@ -35,6 +36,7 @@ router.post('/create_conversation', async (req, res) => {
 
         return res.status(201).json({ conversation });
     } catch (error) {
+        console.log(error.message)
         return res.status(500).json({ message: error.message });
     }
 });
