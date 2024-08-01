@@ -17,15 +17,19 @@ const Category = mongoose.model('Category', CategorySchema);
 
 
 const createCategoryDefault = async (item) => {
-    const newadmin = new Category({
+    const categoryExist = await Category.findOne({name:item});
+    if(categoryExist){
+        console.log(categoryExist.name+" existe déja . ");
+    }
+    const newCategory = new Category({
         name: item,
     });
-    await newadmin.save()
+    await newCategory.save()
         .then((savedAdmin) => {
-            console.log(`${item} Créer avec succès `);
+            // console.log(`${item} Créer avec succès `);
         })
         .catch((error) => {
-            console.log(`${item}Catégorie existe déja`);
+            // console.log(`${item}Catégorie existe déja`);
         });
 }
 
@@ -63,8 +67,8 @@ const categoryList = [
 ];
 
 // create administrateur
-// for (var item of categoryList) {
-//     createCategoryDefault(item);
-// }
+for (var item of categoryList) {
+    createCategoryDefault(item);
+}
 
 module.exports = Category;

@@ -8,7 +8,7 @@ router.post('/create_conversation', async (req, res) => {
     const { senderId, receiverId } = req.body;
     try {
         // Vérifier si les utilisateurs existent
-        const sender = await Artisan.findById(senderId);
+        const sender = await Artisan.findById({senderId});
         const receiver = await Artisan.findById(receiverId);
         if (!sender || !receiver) {
             return res.status(404).json({ message: 'Utilisateur introuvable' });

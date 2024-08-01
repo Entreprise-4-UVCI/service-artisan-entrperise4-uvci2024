@@ -19,11 +19,15 @@ const Skill = mongoose.model('Skill', SkillSchema);
 
 
 const createSkillsDefault = async (item) => {
-    const newadmin = new Skill({
+    const skillExist = await Skill.findOne({name:item});
+    if(skillExist){
+        console.log(skillExist.name+" existe déja . ");
+    }
+    const newSkill = new Skill({
         name: item,
     });
-    await newadmin.save()
-        .then((savedAdmin) => {
+    await newSkill.save()
+        .then(() => {
             console.log(` ${item} Créer avec succès `);
         })
         .catch((error) => {
@@ -139,9 +143,9 @@ const skillsList = [
 ];
 
 // skills
-// for (var item of skillsList) {
-//     createSkillsDefault(item);
-// }
+for (var item of skillsList) {
+    createSkillsDefault(item);
+}
 
 
 module.exports = Skill;
