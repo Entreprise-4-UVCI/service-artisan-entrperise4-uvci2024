@@ -168,7 +168,18 @@ router.patch('/block/:id', authenticateToken, async (req, res) => {
 // Obtenir tous les artisans
 router.get('/get_artisans', async (req, res) => {
     try {
-        const artisans = await Artisan.find().populate('userId');
+        const artisans = await Artisan.find({role:"Artisan"}).populate('userId');
+        return res.status(200).json({ data: artisans, message: "Tous les artisans" });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+});
+
+
+// Obtenir tous les artisans
+router.get('/get_clients', async (req, res) => {
+    try {
+        const artisans = await Artisan.find({role:"Client"}).populate('userId');
         return res.status(200).json({ data: artisans, message: "Tous les artisans" });
     } catch (error) {
         return res.status(500).json({ message: error.message });
