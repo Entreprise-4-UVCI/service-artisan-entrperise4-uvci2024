@@ -33,8 +33,8 @@ exports.registerArtisan = async (req, res) => {
 
     await artisan.save();
     sendEmail(
-      "noreply@example.com",
-      "Votre mot de passe",
+      "aymarbly559@gmail.com",
+      "a g c t x y x c o x s k v a g k",
       artisan.email,
       "Mot de passe Plateforme Artisan",
       `Votre mot de passe est : <strong>${password}</strong>`

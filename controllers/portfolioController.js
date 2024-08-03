@@ -27,7 +27,7 @@ exports.getPortfolio = async (req, res) => {
 // Obtenir tous les portfolios d'un artisan
 exports.getAllPortfolios = async (req, res) => {
     try {
-        const portfolios = await Portfolio.find({ artisanId: req.params.artisanId });
+        const portfolios = await Portfolio.find({ artisanId: req.params.artisanId,isVisible:true });
         res.json({ data: portfolios, message: "Portfolios récupérés avec succès" });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -50,10 +50,11 @@ exports.updatePortfolio = async (req, res) => {
 // Supprimer un portfolio
 exports.deletePortfolio = async (req, res) => {
     try {
-        const portfolio = await Portfolio.findByIdAndDelete(req.params.id);
+        const portfolio = await Portfolio.findById({_id:req.params.id});
         if (!portfolio) {
             return res.status(404).json({ message: 'Portfolio non trouvé' });
         }
+        portfolio.isVisible=false;
         res.json({ message: 'Portfolio supprimé avec succès' });
     } catch (error) {
         res.status(500).json({ message: error.message });

@@ -7,6 +7,7 @@ const morgan = require('morgan');
 dotenv.config();
 const connectDB = require('./database');
 
+
 const app = express();
 const port = process.env.PORT || 1000;
 
@@ -31,6 +32,8 @@ app.use((req, res, next) => {
 })
 
 
+const UploadFile = require("./utils/FileUpload");
+
 // Import des routes
 const artisanRoutes = require('./routes/artisanRoutes');
 const userRoutes = require('./routes/userRoutes');
@@ -46,6 +49,15 @@ const portfolioRoutes = require('./routes/portfolioRoutes');
 const publicationRoutes = require('./routes/publicationRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const transactionRoutes = require('./routes/transactionRoutes');
+
+
+
+// upload image
+app.post("/uploadImage", (req, res) => {
+  UploadFile(req.body.image)
+    .then((url) => res.send(url))
+    .catch((err) => res.status(500).send(err));
+});
 
 
 
