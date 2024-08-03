@@ -5,7 +5,7 @@ const authenticateToken = require('../middlewares/auth');
 
 router.post('/register', userController.register);
 router.post('/login', userController.login);
-router.patch('/update', authenticateToken, userController.updateUser);
+router.patch('/update/:id', authenticateToken, userController.updateUser);
 router.delete('/delete', authenticateToken, userController.deleteUser);
 
 module.exports = router;
