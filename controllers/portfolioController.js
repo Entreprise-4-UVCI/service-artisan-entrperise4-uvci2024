@@ -55,8 +55,10 @@ exports.deletePortfolio = async (req, res) => {
             return res.status(404).json({ message: 'Portfolio non trouvé' });
         }
         portfolio.isVisible=false;
-        res.json({ message: 'Portfolio supprimé avec succès' });
+        portfolio.save();
+
+        return res.status(200).json({ message: 'Portfolio supprimé avec succès' });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        return res.status(500).json({ message: error.message });
     }
 };
