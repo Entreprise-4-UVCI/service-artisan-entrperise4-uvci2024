@@ -87,6 +87,16 @@ const ArtisanSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    // emplacement
+    country:{
+        type:Object
+    },
+    language:{
+        type:Object
+    },
+    city:{
+        type:Object
+    },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
@@ -95,6 +105,24 @@ const ArtisanSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category'
     },
+
+
+    // solde
+    account: {
+        solde: {
+            type: Number, default: 5000
+        },
+        pack: {
+            title: { String, default: "STARTER" },
+            dateStart: { type: Date },
+            dateEnd: { type: Date },
+            possibilities: {
+                type: Number,
+                default: 0
+            }
+        }
+    },
+
 
 
 
@@ -111,8 +139,8 @@ const ArtisanSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
-},{
-    timestamps:true 
+}, {
+    timestamps: true
 });
 
 const Artisan = mongoose.model('Artisan', ArtisanSchema);

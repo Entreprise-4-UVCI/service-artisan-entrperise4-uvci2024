@@ -41,6 +41,13 @@ const categoryRoutes = require('./routes/categoryRoutes');
 const skillRoutes = require('./routes/skillRoutes');
 const chatRoutes = require('./routes/chatRoutes');
 const authenticateToken = require('./middlewares/auth');
+// services artisans
+const portfolioRoutes = require('./routes/portfolioRoutes');
+const publicationRoutes = require('./routes/publicationRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
+const transactionRoutes = require('./routes/transactionRoutes');
+
+
 
 // Route de test pour vérifier que le serveur fonctionne
 app.get("/", authenticateToken, (req, res) => {
@@ -58,7 +65,11 @@ app.use('/api/v1/review', reviewRoutes);
 app.use('/api/v1/skill', skillRoutes);
 app.use('/api/v1/category', categoryRoutes);
 app.use('/api/v1/chat', chatRoutes);
-
+// secvices artisans
+app.use('/api/v1/portfolio', portfolioRoutes);
+app.use('/api/v1/publication', publicationRoutes);
+app.use('/api/v1/payment', paymentRoutes);
+app.use('/api/v1/transaction', transactionRoutes);
 
 
 
