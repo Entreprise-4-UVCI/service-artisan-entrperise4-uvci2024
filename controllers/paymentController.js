@@ -11,6 +11,7 @@ exports.createPayment = async (req, res) => {
     }
 };
 
+
 // Obtenir un paiement par ID
 exports.getPayment = async (req, res) => {
     try {

@@ -89,13 +89,24 @@ const ArtisanSchema = new mongoose.Schema({
     },
     // emplacement
     country:{
-        type:Object
+        type:Object,
+        default:{
+            value:"Côte d'Ivoire",
+            label:"Côte d'Ivoire"
+        }
     },
     language:{
-        type:Object
+        type:Object,
+        default:{
+            value:"fr",
+            label:"Français",
+        }
     },
     city:{
-        type:Object
+        type:Object,default:{
+            value:"Abidjan",
+            label:"Abidjan"
+        }
     },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -113,7 +124,7 @@ const ArtisanSchema = new mongoose.Schema({
             type: Number, default: 5000
         },
         pack: {
-            title: { String, default: "STARTER" },
+            title: { String },
             dateStart: { type: Date },
             dateEnd: { type: Date },
             possibilities: {
