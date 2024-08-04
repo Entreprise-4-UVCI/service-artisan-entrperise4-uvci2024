@@ -4,7 +4,7 @@ const { createPublication, getPublication, updatePublication, deletePublication,
 const authenticateToken = require('../middlewares/auth');
 
 // Créer une publication
-router.post('/register', authenticateToken, createPublication);
+router.post('/register', createPublication);
 
 // Obtenir une publication par ID
 router.get('/get_publication/:id', getPublication);
@@ -13,9 +13,9 @@ router.get('/get_publication/:id', getPublication);
 router.get('/get_publications/artisan/:artisanId', getAllPublications);
 
 // Mettre à jour une publication
-router.patch('/edit/:id', authenticateToken, updatePublication);
+router.patch('/edit/:id', updatePublication);
 
 // Supprimer une publication
-router.delete('/delete/:id', authenticateToken, deletePublication);
+router.delete('/delete/:id', deletePublication);
 
 module.exports = router;

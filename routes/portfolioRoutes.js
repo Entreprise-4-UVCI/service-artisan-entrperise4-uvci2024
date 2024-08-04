@@ -13,7 +13,7 @@ router.get('/get_portfolio/:id', getPortfolio);
 router.get('/get_portfolios/artisan/:artisanId', getAllPortfolios);
 
 // Mettre à jour un portfolio
-router.patch('/edit/:id', authenticateToken, updatePortfolio);
+router.put('/edit/:id', updatePortfolio);
 
 // Supprimer un portfolio
 router.put('/delete/:id', deletePortfolio);

@@ -7,6 +7,7 @@ exports.createPortfolio = async (req, res) => {
         await portfolio.save();
         res.status(201).json({ data: portfolio, message: "Portfolio créé avec succès" });
     } catch (error) {
+        console.log(error.message)
         res.status(400).json({ message: error.message });
     }
 };
@@ -28,7 +29,7 @@ exports.getPortfolio = async (req, res) => {
 exports.getAllPortfolios = async (req, res) => {
     try {
         const portfolios = await Portfolio.find({ artisanId: req.params.artisanId,isVisible:true });
-        res.json({ data: portfolios, message: "Portfolios récupérés avec succès" });
+        res.json({ data: portfolios.reverse(), message: "Portfolios récupérés avec succès" });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -37,7 +38,7 @@ exports.getAllPortfolios = async (req, res) => {
 // Mettre à jour un portfolio
 exports.updatePortfolio = async (req, res) => {
     try {
-        const portfolio = await Portfolio.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const portfolio = await Portfolio.findByIdAndUpdate({_id:req.params.id}, req.body, { new: true });
         if (!portfolio) {
             return res.status(404).json({ message: 'Portfolio non trouvé' });
         }

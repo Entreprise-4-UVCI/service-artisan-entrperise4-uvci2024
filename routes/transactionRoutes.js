@@ -4,7 +4,7 @@ const { createTransaction, getTransaction, updateTransaction, deleteTransaction,
 const authenticateToken = require('../middlewares/auth');
 
 // Créer une transaction
-router.post('/register', authenticateToken, createTransaction);
+router.post('/register', createTransaction);
 
 // Obtenir une transaction par ID
 router.get('/get_transaction/:id', getTransaction);
@@ -13,9 +13,9 @@ router.get('/get_transaction/:id', getTransaction);
 router.get('/get_transactions/user/:userId', getAllTransactions);
 
 // Mettre à jour une transaction
-router.patch('/edit/:id', authenticateToken, updateTransaction);
+router.patch('/edit/:id', updateTransaction);
 
 // Supprimer une transaction
-router.delete('/delete/:id', authenticateToken, deleteTransaction);
+router.delete('/delete/:id', deleteTransaction);
 
 module.exports = router;

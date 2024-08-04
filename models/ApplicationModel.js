@@ -18,10 +18,14 @@ const applicationSchema = new Schema({
         ref: 'Artisan',
         required: true,
     },
-    
+    choiceBudget:{
+        type:Number,
+        default:0,
+        required:true
+    },    
     message: {
         type: String,
-        required: true
+        required: false
     },
     status: {
         type: String,
