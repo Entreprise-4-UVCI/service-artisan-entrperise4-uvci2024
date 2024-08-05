@@ -112,7 +112,7 @@ const ArtisanSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
-    categoryId: {
+    category: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category'
     },

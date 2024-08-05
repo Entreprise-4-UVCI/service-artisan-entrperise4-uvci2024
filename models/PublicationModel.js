@@ -14,9 +14,19 @@ const PublicationSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  category: {
+    type:Object
+  },
+  coutDay:{
+    type:Number,
+    default:1
+  },
   image: {
     type: String, // URL de l'image associée à la publication
     required: false
+  },
+  budgetChoice: {
+    type: Number
   },
   datePublished: {
     type: Date,
@@ -31,9 +41,9 @@ const PublicationSchema = new mongoose.Schema({
     default: 0
   },
   comments: [{
-    userId: {
+    artisanId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: 'Artisan',
       required: true
     },
     comment: {
