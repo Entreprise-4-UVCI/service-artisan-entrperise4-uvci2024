@@ -26,7 +26,8 @@ const PublicationSchema = new mongoose.Schema({
     required: false
   },
   budgetChoice: {
-    type: Number
+    type: Number,
+    default:1000
   },
   datePublished: {
     type: Date,
