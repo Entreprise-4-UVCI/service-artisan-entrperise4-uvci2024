@@ -6,6 +6,7 @@ exports.createReview = async (req, res) => {
     await review.save();
     return res.status(201).json({ data: review, message: "Nouvel avis posté avec succès" });
   } catch (error) {
+    console.log(error.message)
     return res.status(400).json({ message: error.message });
   }
 };
@@ -21,9 +22,21 @@ exports.getAllReviews = async (req, res) => {
   }
 };
 
-exports.getReviewsByArtisan = async (req, res) => {
+exports.getReviewsByClient = async (req, res) => {
   try {
     const reviews = await Review.find({ clientId: req.params.artisanId })
+      .populate('clientId', 'firstname lastname phone codePostal email')
+      .populate('artisanId', 'firstname lastname phone codePostal email');
+    return res.status(200).json({ data: reviews.reverse(), message: "Avis de l'artisan récupérés avec succès" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+
+exports.getReviewsByArtisanView = async (req, res) => {
+  try {
+    const reviews = await Review.find({ artisanId: req.params.artisanId })
       .populate('clientId', 'firstname lastname phone codePostal email')
       .populate('artisanId', 'firstname lastname phone codePostal email');
     return res.status(200).json({ data: reviews.reverse(), message: "Avis de l'artisan récupérés avec succès" });

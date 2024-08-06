@@ -5,7 +5,8 @@ const authenticateToken = require('../middlewares/auth');
 
 router.post('/register', reviewController.createReview);
 router.get('/get_reviews', reviewController.getAllReviews);
-router.get('/get_reviews/artisan/:artisanId', reviewController.getReviewsByArtisan);
+router.get('/get_reviews/client/:artisanId', reviewController.getReviewsByClient);
+router.get('/get_reviews/artisan/:artisanId', reviewController.getReviewsByArtisanView);
 router.get('/get_review/:id', reviewController.getReviewById);
 router.patch('/edit/:id', reviewController.updateReview);
 router.put('/hide/:id', reviewController.hideReview);
