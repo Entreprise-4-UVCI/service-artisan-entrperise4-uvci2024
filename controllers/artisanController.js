@@ -139,7 +139,7 @@ exports.blockArtisan = async (req, res) => {
 exports.getAllArtisans = async (req, res) => {
   try {
     const artisans = await Artisan.find({ role: "Artisan" }).populate('userId');
-    return res.status(200).json({ data: artisans, message: "Tous les artisans" });
+    return res.status(200).json({ data: artisans.reverse(), message: "Tous les artisans" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
