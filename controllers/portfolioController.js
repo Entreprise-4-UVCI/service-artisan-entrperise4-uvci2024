@@ -37,6 +37,18 @@ exports.getAllPortfolios = async (req, res) => {
 
 
 
+// Obtenir tous les portfolios d'un artisan
+exports.getAllPortfoliosAll = async (req, res) => {
+    try {
+        const portfolios = await Portfolio.find({isVisible:true });
+        res.json({ data: portfolios.reverse(), message: "Portfolios récupérés avec succès" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+
+
 // Mettre à jour un portfolio
 exports.updatePortfolio = async (req, res) => {
     try {

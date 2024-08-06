@@ -66,13 +66,15 @@ exports.getUserConversations = async (req, res) => {
         path: 'participants',
         select: 'username firstname lastname shopName telephone codePostal dateJour is_active coverPicture'
       })
-      .populate('messages');
+      .populate('messages')
+      .sort({ updatedAt: -1 }); // Trier par date de modification décroissante
 
     return res.status(200).json({ data: conversations, message: "Conversations de l'utilisateur récupérées avec succès" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
+
 
 exports.getConversationById = async (req, res) => {
   const { conversationId } = req.params;
