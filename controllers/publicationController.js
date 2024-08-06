@@ -35,7 +35,7 @@ exports.getAllPublications = async (req, res) => {
             path: 'artisanId',
             select: 'firstname lastname email phone codePostal profilePicture address category skills certifications' // specify the fields you want
         })
-        res.json({ data: publications, message: "Publications récupérées avec succès" });
+        res.json({ data: publications.reverse(), message: "Publications récupérées avec succès" });
     } catch (error) {
         console;log(error.message)
         res.status(500).json({ message: error.message });
@@ -49,7 +49,7 @@ exports.getAllPublicationsArtisan = async (req, res) => {
             path: 'artisanId',
             select: 'firstname lastname email phone codePostal address category skills certifications' // specify the fields you want
         })
-        res.json({ data: publications, message: "Publications récupérées avec succès" });
+        res.json({ data: publications.reverse(), message: "Publications récupérées avec succès" });
     } catch (error) {
         console;log(error.message)
         res.status(500).json({ message: error.message });

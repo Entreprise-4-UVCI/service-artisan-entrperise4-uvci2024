@@ -35,6 +35,8 @@ exports.getAllPortfolios = async (req, res) => {
     }
 };
 
+
+
 // Mettre à jour un portfolio
 exports.updatePortfolio = async (req, res) => {
     try {

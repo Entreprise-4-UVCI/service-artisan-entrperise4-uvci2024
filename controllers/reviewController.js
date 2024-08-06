@@ -23,7 +23,7 @@ exports.getAllReviews = async (req, res) => {
 
 exports.getReviewsByArtisan = async (req, res) => {
   try {
-    const reviews = await Review.find({ artisanId: req.params.artisanId })
+    const reviews = await Review.find({ clientId: req.params.artisanId })
       .populate('clientId', 'firstname lastname phone codePostal email')
       .populate('artisanId', 'firstname lastname phone codePostal email');
     return res.status(200).json({ data: reviews.reverse(), message: "Avis de l'artisan récupérés avec succès" });

@@ -3,11 +3,11 @@ const mongoose = require('mongoose');
 const ArtisanSchema = new mongoose.Schema({
     firstname: {
         type: String,
-        required: false
+        required: true
     },
     lastname: {
         type: String,
-        required: false
+        required: true
     },
     company: {
         type: String,
@@ -15,11 +15,11 @@ const ArtisanSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        required: false,
+        required: true,
     },
     phone: {
         type: String,
-        required: false,
+        required: true,
     },
     codePostal: {
         type: String,
@@ -31,7 +31,8 @@ const ArtisanSchema = new mongoose.Schema({
         default: 'Male'
     },
     dateOfBirth: {
-        type: String
+        type: String,
+        required:true
     },
     profilePicture: {
         type: String
@@ -73,7 +74,7 @@ const ArtisanSchema = new mongoose.Schema({
     },
     rating: {
         type: Number,
-        default: 0
+        default: 1
     },
     certifications: {
         type: [Object]
