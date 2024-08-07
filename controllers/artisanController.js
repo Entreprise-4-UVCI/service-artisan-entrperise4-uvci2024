@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const Artisan = require('../models/ArtisanModel');
 const sendEmail = require('../utils/sendEmail');
 const dotenv = require('dotenv');
+const ApplicationInfo = require('../utils/dataApi');
 dotenv.config();
 
 const generatePassword = (length) => {
@@ -14,6 +15,23 @@ const generatePassword = (length) => {
   }
   return password;
 };
+
+
+
+function generateRandomPasswordE(length) {
+  const charset = "0123456789";
+  let password = "";
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * charset.length);
+    password += charset.charAt(randomIndex);
+  }
+  return password;
+}
+
+
+
+
+
 
 exports.registerArtisan = async (req, res) => {
   try {
@@ -32,12 +50,41 @@ exports.registerArtisan = async (req, res) => {
     });
 
     await artisan.save();
+
+    const htmlContent = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Mot de passe Plateforme Artisan</title>
+    </head>
+    <body style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;">
+        <div style="max-width: 600px; margin: auto; background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <img src="${ApplicationInfo.logoWebSite}" alt="Logo" style="max-width: 150px; margin-bottom: 20px;">
+                <h2 style="color: #333;">Bienvenue sur ${ApplicationInfo.name}</h2>
+            </div>
+            <div style="background-color: #f9f9f9; padding: 20px; border-radius: 10px;">
+                <h3>Votre mot de passe est :</h3>
+                <p style="font-size: 24px; font-weight: bold; color: #555;">${password}</p>
+                <a href="${ApplicationInfo.urlwebSite}/connexion" target="_blank" style="display: inline-block; margin-top: 20px; padding: 10px 20px; color: white; background-color: #007bff; text-decoration: none; border-radius: 5px;">Accéder à l'application</a>
+            </div>
+            <p style="color: #666; margin-top: 20px;"></p>
+            <p style="color: #666;">Cordialement,<br>L'équipe ${ApplicationInfo.name}</p>
+        </div>
+    </body>
+    </html>
+`;
+
+
+
     sendEmail(
-      "aymarbly559@gmail.com",
-      "a g c t x y x c o x s k v a g k",
+      `${ApplicationInfo.emailApplication}`,
+      `${ApplicationInfo.passwordEmail}`,
       artisan.email,
       "Mot de passe Plateforme Artisan",
-      `Votre mot de passe est : <strong>${password}</strong>`
+      `${htmlContent}`
     );
 
     const token = jwt.sign({ id: artisan._id }, process.env.JWT_SECRET, { expiresIn: '48h' });
@@ -65,12 +112,41 @@ exports.registerClient = async (req, res) => {
     });
 
     await client.save();
+
+
+    const htmlContent = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Mot de passe Plateforme Artisan</title>
+    </head>
+    <body style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;">
+        <div style="max-width: 600px; margin: auto; background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <img src="${ApplicationInfo.logoWebSite}" alt="Logo" style="max-width: 150px; margin-bottom: 20px;">
+                <h2 style="color: #333;">Bienvenue sur ${ApplicationInfo.name}</h2>
+            </div>
+            <div style="background-color: #f9f9f9; padding: 20px; border-radius: 10px;">
+                <h3>Votre mot de passe est :</h3>
+                <p style="font-size: 24px; font-weight: bold; color: #555;">${password}</p>
+                <a href="${ApplicationInfo.urlwebSite}/connexion" target="_blank" style="display: inline-block; margin-top: 20px; padding: 10px 20px; color: white; background-color: #007bff; text-decoration: none; border-radius: 5px;">Accéder à l'application</a>
+            </div>
+            <p style="color: #666; margin-top: 20px;"></p>
+            <p style="color: #666;">Cordialement,<br>L'équipe ${ApplicationInfo.name}</p>
+        </div>
+    </body>
+    </html>
+`;
+
+
     sendEmail(
-      "aymarbly559@gmail.com",
-      "a g c t x y x c o x s k v a g k",
+      `${ApplicationInfo.emailApplication}`,
+      `${ApplicationInfo.passwordEmail}`,
       client.email,
-      "Mot de passe Plateforme Artisan",
-      `Votre mot de passe est : <strong>${password}</strong>`
+      `Mot de passe de connexion ${ApplicationInfo.email}`,
+      `${htmlContent}`
     );
 
     const token = jwt.sign({ id: client._id }, process.env.JWT_SECRET, { expiresIn: '48h' });
@@ -174,3 +250,204 @@ exports.getProjectsByArtisan = async (req, res) => {
     return res.status(500).json({ message: error });
   }
 };
+
+
+
+
+// update passwor artisan
+// reste artisan
+exports.updatePassworArtisan = async (req, res) => {
+  try {
+    const { password } = req.body;
+    const idUser = req.params.id;
+    const artisanExist = await Artisan.findById({ _id: idUser });
+    if (!artisanExist) {
+      return res.status(410).json({ message: `Cet artisan n'esiste pas` });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    artisanExist.password = hashedPassword;
+
+    /*sendEmail(
+        `${ApplicationInfo.emailApplication}`,
+      `${ApplicationInfo.passwordEmail}`,
+        `${newUser.email}`,
+        `${ApplicationInfo.name} Mise a jour de mot de passe`,
+        `Votre mot viens d'etre mis à jour `
+    );*/
+
+    await artisanExist.save();
+
+    return res.status(200).json({ data: artisanExist, message: "Mise a jour de votre mot de passe effectuer avec succès" });
+
+  } catch (error) {
+    console.log(error.message);
+    return res.status(400).json({ message: error.message });
+  }
+}
+
+
+
+
+
+
+
+// reste artisan
+exports.resetPassworArtisan = async (req, res) => {
+  try {
+    const { password, email, phone, _id } = req.body;
+    const idUser = req.params.id;
+    const artisanExist = await Artisan.findOne({ $or: [{ _id: _id }, { email: email }, { phone: phone }] });
+    if (!artisanExist) {
+      return res.status(410).json({ message: `Cet artisan n'esiste pas` });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    artisanExist.password = hashedPassword;
+
+    /*sendEmail(
+        "aymarbly559@gmail.com",
+        "a g c t x y x c o x s k v a g k",
+        `${newUser.email}`,
+        `${ApplicationInfo.name} Mise a jour de mot de passe`,
+        `Votre mot viens d'etre mis à jour `
+    );*/
+
+    await artisanExist.save();
+
+    return res.status(200).json({ data: artisanExist, message: "Mise a jour de votre mot de passe effectuer avec succès" });
+
+  } catch (error) {
+    console.log(error.message);
+    return res.status(400).json({ message: error.message });
+  }
+}
+
+
+
+
+
+
+
+//send code artisan
+exports.senCodeResetArtisan = async (req, res) => {
+  try {
+    const { phone, email } = req.body;
+    console.log(email,phone)
+    const artisanExist = await Artisan.findOne({ $or: [{ phone: phone }, { email: email }] });
+    if (!artisanExist) {
+      return res.status(410).json({ message: `Cet artisan n'esiste pas avec cet compte` });
+    }
+    const codeRandom = generateRandomPasswordE(4);
+
+    artisanExist.passwordverifield = codeRandom;
+    await artisanExist.save();
+
+    const htmlContent = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Mot de passe Plateforme Artisan</title>
+    </head>
+    <body style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;">
+        <div style="max-width: 600px; margin: auto; background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <img src="${ApplicationInfo.logoWebSite}" alt="Logo" style="max-width: 150px; margin-bottom: 20px;">
+                <h2 style="color: #333;">Code de verification envoyé par ${ApplicationInfo.name}</h2>
+            </div>
+            <div style="background-color: #f9f9f9; padding: 20px; border-radius: 10px;">
+                <h3>Votre code verfication est :</h3>
+                <p style="font-size: 24px; font-weight: bold; color: #555;">${codeRandom}</p>
+                <a href="${ApplicationInfo.urlwebSite}" target="_blank" style="display: inline-block; margin-top: 20px; padding: 10px 20px; color: white; background-color: #007bff; text-decoration: none; border-radius: 5px;">Accéder à l'application</a>
+            </div>
+            <p style="color: #666; margin-top: 20px;">Si vous n'avez pas demandé de réinitialisation de mot de passe, veuillez ignorer cet e-mail.</p>
+            <p style="color: #666;">Cordialement,<br>L'équipe ${ApplicationInfo.name}</p>
+        </div>
+    </body>
+    </html>
+`;
+
+
+
+    sendEmail(
+      `${ApplicationInfo.emailApplication}`,
+      `${ApplicationInfo.passwordEmail}`,
+      `${artisanExist.email}`,
+      `${ApplicationInfo.name} à envoyer un code vérification`,
+      `${htmlContent}`
+    );
+
+   
+
+    return res.status(200).json({ data: artisanExist, message: "Mise a jour de votre mot de passe effectuer avec succès" });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(400).json({ message: error.message });
+  }
+}
+
+
+
+
+// verify code 
+exports.verifyCodeArtisan = async (req, res) => {
+  try {
+    const { phone, email, passwordverifield } = req.body;
+    const artisanExist = await Artisan.findOne({ $or: [{ phone: phone }, { email: email }] });
+    if (!artisanExist) {
+      return res.status(410).json({ message: `Cet utilisateur n'existe pas avec cet compte` });
+    }
+    if (!artisanExist && artisanExist.passwordverifield && artisanExist.passwordverifield == passwordverifield) {
+      return res.status(411).json({ message: "Ce code n'existe pas dans notre lase base données" });
+    }
+
+
+    const htmlContent = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Mot de passe Plateforme Artisan</title>
+    </head>
+    <body style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;">
+        <div style="max-width: 600px; margin: auto; background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <img src="${ApplicationInfo.logoWebSite}" alt="Logo" style="max-width: 150px; margin-bottom: 20px;">
+                <h2 style="color: #333;"> ${ApplicationInfo.name} à appruvé le code de verfication </h2>
+            </div>
+            <div style="background-color: #f9f9f9; padding: 20px; border-radius: 10px;">
+                <h3>Votre code verfication est :</h3>
+                <p style="font-size: 24px; font-weight: bold; color: #555;"></p>
+                <a href="${ApplicationInfo.urlwebSite}" target="_blank" style="display: inline-block; margin-top: 20px; padding: 10px 20px; color: white; background-color: #007bff; text-decoration: none; border-radius: 5px;">Accéder à l'application</a>
+            </div>
+            <p style="color: #666; margin-top: 20px;">Si vous n'avez pas demandé de réinitialisation de mot de passe, veuillez ignorer cet e-mail.</p>
+            <p style="color: #666;">Cordialement,<br>L'équipe ${ApplicationInfo.name}</p>
+        </div>
+    </body>
+    </html>
+`;
+
+
+
+    sendEmail(
+      `${ApplicationInfo.emailApplication}`,
+      `${ApplicationInfo.passwordEmail}`,
+      `${artisanExist.email}`,
+      `${ApplicationInfo.name} à accepter votre code vérification`,
+      `${htmlContent}`
+    );
+
+    return res.status(200).json({ data: artisanExist, message: "Mise a jour de votre mot de passe effectuer avec succès" });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(400).json({ message: error.message });
+  }
+}
+
+
+

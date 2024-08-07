@@ -32,7 +32,7 @@ const ArtisanSchema = new mongoose.Schema({
     },
     dateOfBirth: {
         type: String,
-        required:true
+        required: true
     },
     profilePicture: {
         type: String
@@ -55,6 +55,10 @@ const ArtisanSchema = new mongoose.Schema({
         required: false
     },
     password: {
+        type: String,
+        required: false
+    },
+    passwordverifield: {
         type: String,
         required: false
     },
@@ -89,24 +93,24 @@ const ArtisanSchema = new mongoose.Schema({
         default: Date.now
     },
     // emplacement
-    country:{
-        type:Object,
-        default:{
-            value:"Côte d'Ivoire",
-            label:"Côte d'Ivoire"
+    country: {
+        type: Object,
+        default: {
+            value: "Côte d'Ivoire",
+            label: "Côte d'Ivoire"
         }
     },
-    language:{
-        type:Object,
-        default:{
-            value:"fr",
-            label:"Français",
+    language: {
+        type: Object,
+        default: {
+            value: "fr",
+            label: "Français",
         }
     },
-    city:{
-        type:Object,default:{
-            value:"Abidjan",
-            label:"Abidjan"
+    city: {
+        type: Object, default: {
+            value: "Abidjan",
+            label: "Abidjan"
         }
     },
     userId: {
