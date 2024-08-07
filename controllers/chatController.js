@@ -81,16 +81,22 @@ exports.getConversationById = async (req, res) => {
   try {
     const conversation = await Conversation.findById(conversationId)
       .populate('messages')
-      .populate('participants', 'username');
+      .populate({
+        path: 'participants',
+        select: 'username firstname lastname phone email codePostal profilePicture'
+      })
     if (!conversation) {
       return res.status(404).json({ message: 'Conversation introuvable' });
     }
 
+    console.log(conversation);
     return res.status(200).json({ data: conversation });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
+
+
 
 exports.getConversationParticipants = async (req, res) => {
   const { conversationId } = req.params;
