@@ -14,8 +14,8 @@ exports.createReview = async (req, res) => {
 exports.getAllReviews = async (req, res) => {
   try {
     const reviews = await Review.find()
-      .populate('clientId', 'firstname lastname phone codePostal email')
-      .populate('artisanId', 'firstname lastname phone codePostal email');
+      .populate('clientId', 'firstname lastname phone codePostal email profilePicture')
+      .populate('artisanId', 'firstname lastname phone codePostal email profilePicture');
     return res.status(200).json({ data: reviews.reverse(), message: "Tous les avis" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -25,8 +25,8 @@ exports.getAllReviews = async (req, res) => {
 exports.getReviewsByClient = async (req, res) => {
   try {
     const reviews = await Review.find({ clientId: req.params.artisanId })
-      .populate('clientId', 'firstname lastname phone codePostal email')
-      .populate('artisanId', 'firstname lastname phone codePostal email');
+      .populate('clientId', 'firstname lastname phone codePostal email profilePicture')
+      .populate('artisanId', 'firstname lastname phone codePostal email profilePicture');
     return res.status(200).json({ data: reviews.reverse(), message: "Avis de l'artisan récupérés avec succès" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -37,8 +37,8 @@ exports.getReviewsByClient = async (req, res) => {
 exports.getReviewsByArtisanView = async (req, res) => {
   try {
     const reviews = await Review.find({ artisanId: req.params.artisanId })
-      .populate('clientId', 'firstname lastname phone codePostal email')
-      .populate('artisanId', 'firstname lastname phone codePostal email');
+      .populate('clientId', 'firstname lastname phone codePostal email profilePicture')
+      .populate('artisanId', 'firstname lastname phone codePostal email profilePicture');
     return res.status(200).json({ data: reviews.reverse(), message: "Avis de l'artisan récupérés avec succès" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -48,8 +48,8 @@ exports.getReviewsByArtisanView = async (req, res) => {
 exports.getReviewById = async (req, res) => {
   try {
     const review = await Review.findById(req.params.id)
-      .populate('clientId', 'firstname lastname phone codePostal email')
-      .populate('artisanId', 'firstname lastname phone codePostal email');
+      .populate('clientId', 'firstname lastname phone codePostal email profilePicture')
+      .populate('artisanId', 'firstname lastname phone codePostal email profilePicture');
     return res.status(200).json({ data: review, message: "Avis récupéré avec succès" });
   } catch (error) {
     return res.status(500).json({ message: error.message });

@@ -64,7 +64,7 @@ exports.getUserConversations = async (req, res) => {
     const conversations = await Conversation.find({ participants: userId })
       .populate({
         path: 'participants',
-        select: 'username firstname lastname shopName telephone codePostal dateJour is_active coverPicture'
+        select: 'username firstname lastname phone email codePostal profilePicture'
       })
       .populate('messages')
       .sort({ updatedAt: -1 }); // Trier par date de modification décroissante
