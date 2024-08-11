@@ -12,12 +12,14 @@ exports.createPublication = async (req, res) => {
     }
 };
 
+
+
 // Obtenir une publication par ID
 exports.getPublication = async (req, res) => {
     try {
         const publication = await Publication.findById(req.params.id).populate({
             path: 'artisanId',
-            select: 'firstname lastname email phone codePostal address category skills certifications' // specify the fields you want
+            select: 'firstname lastname email profilePicture phone codePostal address category skills certifications createdAt updatedAt' // specify the fields you want
         })
         if (!publication) {
             return res.status(404).json({ message: 'Publication non trouvée' });
@@ -27,6 +29,8 @@ exports.getPublication = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+
 
 // Obtenir toutes les publications 
 exports.getAllPublications = async (req, res) => {
@@ -65,10 +69,10 @@ exports.updatePublication = async (req, res) => {
         if (!publication) {
             return res.status(404).json({ message: 'Publication non trouvée' });
         }
-        res.json({ data: publication, message: "Publication mise à jour avec succès" });
+        return res.json({ data: publication, message: "Publication mise à jour avec succès" });
     } catch (error) {
         console.log(error);
-        res.status(400).json({ message: error.message });
+        return res.status(400).json({ message: error.message });
     }
 };
 
