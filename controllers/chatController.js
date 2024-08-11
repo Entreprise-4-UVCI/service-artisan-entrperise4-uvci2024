@@ -1,11 +1,12 @@
 const { Conversation, Message } = require('../models/ChatModel');
 const Artisan = require('../models/ArtisanModel');
+const Quote = require('../models/QuoteModel');
 
 exports.createConversation = async (req, res) => {
   const { senderId, receiverId } = req.body;
   try {
-    const sender = await Artisan.findById({_id:senderId});
-    const receiver = await Artisan.findById({_id:receiverId});
+    const sender = await Artisan.findById({ _id: senderId });
+    const receiver = await Artisan.findById({ _id: receiverId });
     if (!sender || !receiver) {
       return res.status(404).json({ message: 'Utilisateur introuvable' });
     }
@@ -15,7 +16,17 @@ exports.createConversation = async (req, res) => {
     });
 
     if (!conversation) {
-      conversation = new Conversation({ participants: [senderId, receiverId] });
+      conversation = new Conversation({ participants: [senderId, receiverId] }).populate({
+        path: 'messages',
+        populate: {
+          path: 'quote',
+          model: 'Quote',
+        },
+      })
+        .populate({
+          path: 'participants',
+          select: 'username firstname lastname phone email codePostal profilePicture'
+        });
       await conversation.save();
       sender.conversations.push(conversation._id);
       receiver.conversations.push(conversation._id);
@@ -32,15 +43,24 @@ exports.createConversation = async (req, res) => {
 exports.sendMessage = async (req, res) => {
   const { conversationId, senderId, content } = req.body;
   try {
-    const conversation = await Conversation.findById({_id:conversationId});
+    const conversation = await Conversation.findById({ _id: conversationId }).populate({
+      path: 'messages',
+      populate: {
+        path: 'quote',
+        model: 'Quote',
+      },
+    })
+      .populate({
+        path: 'participants',
+        select: 'username firstname lastname phone email codePostal profilePicture'
+      });
     if (!conversation) {
       return res.status(404).json({ message: 'Conversation introuvable' });
     }
 
-    if (!conversation.participants.includes(senderId)) {
-      return res.status(403).json({ message: 'Utilisateur non autorisé à envoyer un message dans cette conversation' });
-    }
-
+    // if (!conversation.participants.includes(senderId)) {
+    //   return res.status(403).json({ message: 'Utilisateur non autorisé à envoyer un message dans cette conversation' });
+    // }
     const message = new Message({ sender: senderId, content });
     await message.save();
 
@@ -52,6 +72,57 @@ exports.sendMessage = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+
+//
+exports.sendMessageDevis = async (req, res) => {
+  const { conversationId, senderId, content, title, items, clientId } = req.body;
+  try {
+    const totalPrice = items.reduce((acc, item) => acc + item.total, 0);
+
+    const newQuote = new Quote({
+      title,
+      items,
+      totalPrice,
+      clientId: clientId
+    });
+
+    await newQuote.save();
+
+    const conversation = await Conversation.findById({ _id: conversationId }).populate({
+      path: 'messages',
+      populate: {
+        path: 'quote',
+        model: 'Quote',
+      },
+    })
+      .populate({
+        path: 'participants',
+        select: 'username firstname lastname phone email codePostal profilePicture'
+      });
+
+    if (!conversation) {
+      return res.status(404).json({ message: 'Conversation introuvable' });
+    }
+
+    if (!conversation.participants.includes(senderId)) {
+      return res.status(403).json({ message: 'Utilisateur non autorisé à envoyer un message dans cette conversation' });
+    }
+
+    const message = new Message({ sender: senderId, content, quote: newQuote });
+    await message.save();
+
+    conversation.messages.push(message._id);
+    await conversation.save();
+
+    return res.status(201).json({ data: conversation });
+  } catch (error) {
+    console.log(error.message)
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+
 
 exports.getUserConversations = async (req, res) => {
   const { userId } = req.params;
@@ -80,7 +151,13 @@ exports.getConversationById = async (req, res) => {
   const { conversationId } = req.params;
   try {
     const conversation = await Conversation.findById(conversationId)
-      .populate('messages')
+      .populate({
+        path: 'messages',
+        populate: {
+          path: 'quote',
+          model: 'Quote',
+        },
+      })
       .populate({
         path: 'participants',
         select: 'username firstname lastname phone email codePostal profilePicture'

@@ -5,6 +5,7 @@ const authenticateToken = require('../middlewares/auth');
 
 router.post('/create_conversation', chatController.createConversation);
 router.post('/send_message', chatController.sendMessage);
+router.post('/send_devis', chatController.sendMessageDevis);
 router.get('/get_user_conversations/:userId', chatController.getUserConversations);
 router.get('/get_conversation/:conversationId', chatController.getConversationById);
 router.get('/get_conversation_participants/:conversationId', chatController.getConversationParticipants);

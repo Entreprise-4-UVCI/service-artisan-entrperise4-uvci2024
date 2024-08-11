@@ -32,6 +32,11 @@ const messageSchema = new mongoose.Schema({
         type: String,
         required: false
     },
+    quote: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Quote',
+        required: false
+    },
     status: {
         type: String,
         enum: ['sent', 'delivered', 'read'],

@@ -291,7 +291,6 @@ exports.AccountArtisan = async (req, res) => {
       amount,
       paymentMethod,
       paymentStatus:"COMPLETED",
-
     });
     await payment.save();
 

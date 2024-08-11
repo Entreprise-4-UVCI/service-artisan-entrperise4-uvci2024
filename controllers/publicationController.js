@@ -41,7 +41,7 @@ exports.getAllPublications = async (req, res) => {
         })
         res.json({ data: publications.reverse(), message: "Publications récupérées avec succès" });
     } catch (error) {
-        console;log(error.message)
+        console.log(error.message)
         res.status(500).json({ message: error.message });
     }
 };
