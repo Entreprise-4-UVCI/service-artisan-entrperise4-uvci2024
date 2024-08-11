@@ -49,6 +49,7 @@ const portfolioRoutes = require('./routes/portfolioRoutes');
 const publicationRoutes = require('./routes/publicationRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const transactionRoutes = require('./routes/transactionRoutes');
+const quoteRoutes = require('./routes/quoteRoutes');
 
 
 
@@ -82,6 +83,7 @@ app.use('/api/v1/portfolio', portfolioRoutes);
 app.use('/api/v1/publication', publicationRoutes);
 app.use('/api/v1/payment', paymentRoutes);
 app.use('/api/v1/transaction', transactionRoutes);
+app.use('/api/v1/quote', quoteRoutes);
 
 
 

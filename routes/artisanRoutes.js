@@ -7,6 +7,7 @@ router.post('/register-artisan', artisanController.registerArtisan);
 router.post('/register-client', artisanController.registerClient);
 router.post('/login', artisanController.login);
 router.post('/update-password/:id',artisanController.updatePassworArtisan);
+router.post('/account-recharge-solde/:id',artisanController.AccountArtisan);
 router.post('/reset-password',artisanController.resetPassworArtisan);
 router.post('/send-code-verify',artisanController.senCodeResetArtisan);
 router.post('/verfiy-code-reset',artisanController.verifyCodeArtisan);

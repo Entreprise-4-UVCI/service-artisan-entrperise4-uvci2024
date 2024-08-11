@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Artisan = require('../models/ArtisanModel');
+const Payment = require('../models/PaymentModel');
 const sendEmail = require('../utils/sendEmail');
 const dotenv = require('dotenv');
 const ApplicationInfo = require('../utils/dataApi');
@@ -225,7 +226,7 @@ exports.getAllArtisans = async (req, res) => {
 
 exports.getAllArtisansByCity = async (req, res) => {
   try {
-    const artisans = await Artisan.find({ role: "Artisan","city.value":req.params.idcity }).populate('userId');
+    const artisans = await Artisan.find({ role: "Artisan", "city.value": req.params.idcity }).populate('userId');
     // console.log(artisans.reverse());
     return res.status(200).json({ data: artisans.reverse(), message: "Tous les artisans" });
   } catch (error) {
@@ -264,6 +265,81 @@ exports.getProjectsByArtisan = async (req, res) => {
     return res.status(500).json({ message: error });
   }
 };
+
+
+
+// Account
+exports.AccountArtisan = async (req, res) => {
+  try {
+    const { amount,paymentMethod,artisanId } = req.body;
+    const idUser = req.params.id;
+
+    // Find the artisan by ID
+    const artisanExist = await Artisan.findById({ _id: idUser });
+    if (!artisanExist) {
+      return res.status(410).json({ message: `Cet artisan n'existe pas` });
+    }
+
+    // Update the account balance
+    artisanExist.account.solde += amount;
+
+    // Save the updated artisan data
+    await artisanExist.save();
+
+    const  payment =  new Payment({
+      artisanId,
+      amount,
+      paymentMethod,
+      paymentStatus:"COMPLETED",
+
+    });
+    await payment.save();
+
+    const htmlContent = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Rechargement compte </title>
+    </head>
+    <body style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;">
+        <div style="max-width: 600px; margin: auto; background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <img src="${ApplicationInfo.logoWebSite}" alt="Logo" style="max-width: 150px; margin-bottom: 20px;">
+                <h2 style="color: #333;">Recharge de votre compte sur la plateforme </h2>
+            </div>
+            <div style="background-color: #f9f9f9; padding: 20px; border-radius: 10px;">
+                <h3>Le Montant de la recherche est de  : </h3>
+                <p style="font-size: 24px; font-weight: bold; color: #555;">${amount}XOF</p>
+                <a href="${ApplicationInfo.urlwebSite}" target="_blank" style="display: inline-block; margin-top: 20px; padding: 10px 20px; color: white; background-color: #007bff; text-decoration: none; border-radius: 5px;">Accéder à la plateforme</a>
+            </div>
+            <p style="color: #666; margin-top: 20px;">Si vous n'avez pas fait un recharge , veuillez ignorer cet e-mail.</p>
+            <p style="color: #666;">Cordialement,<br>L'équipe ${ApplicationInfo.name}</p>
+        </div>
+    </body>
+    </html>
+`;
+
+
+
+    sendEmail(
+      `${ApplicationInfo.emailApplication}`,
+      `${ApplicationInfo.passwordEmail}`,
+      `${artisanExist.email}`,
+      `${ApplicationInfo.name} vous envois une recharge`,
+      `${htmlContent}`
+    );
+    // Return a successful response with the updated data
+    return res.status(200).json({ data: artisanExist, message: "Mise à jour du solde effectuée avec succès" });
+
+  } catch (error) {
+    console.log(error.message);
+    return res.status(400).json({ message: error.message });
+  }
+}
+
+
 
 
 
@@ -349,7 +425,7 @@ exports.resetPassworArtisan = async (req, res) => {
 exports.senCodeResetArtisan = async (req, res) => {
   try {
     const { phone, email } = req.body;
-    console.log(email,phone)
+    console.log(email, phone)
     const artisanExist = await Artisan.findOne({ $or: [{ phone: phone }, { email: email }] });
     if (!artisanExist) {
       return res.status(410).json({ message: `Cet artisan n'esiste pas avec cet compte` });
@@ -395,7 +471,7 @@ exports.senCodeResetArtisan = async (req, res) => {
       `${htmlContent}`
     );
 
-   
+
 
     return res.status(200).json({ data: artisanExist, message: "Mise a jour de votre mot de passe effectuer avec succès" });
   } catch (error) {

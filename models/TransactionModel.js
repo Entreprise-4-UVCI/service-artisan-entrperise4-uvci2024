@@ -4,37 +4,38 @@ const TransactionSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Artisan', // Référence au modèle User (peut être Artisan ou Client)
-    required: true
+    required: false
   },
   artisanId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Artisan', // Référence à l'artisan qui reçoit le paiement
-    required: true
+    required: false
   },
   paymentId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Payment', // Référence au modèle Payment associé
-    required: true
+    required: false
   },
   amount: {
     type: Number,
-    required: true
+    required: false
   },
   currency: {
     type: String,
     default: 'CFA',
-    required: true
+    required: false
   },
   transactionType: {
     type: String,
     enum: ['SERVICE_PAYMENT', 'DONATION', 'SUBSCRIPTION', 'OTHER'],
-    required: true
+    required: true,
+    default:"SERVICE_PAYMENT"
   },
   transactionStatus: {
     type: String,
     enum: ['PENDING', 'COMPLETED', 'FAILED', 'REFUNDED'],
     default: 'PENDING',
-    required: true
+    required: false
   },
   transactionDate: {
     type: Date,

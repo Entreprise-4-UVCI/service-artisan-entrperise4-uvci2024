@@ -13,12 +13,11 @@ const PaymentSchema = new mongoose.Schema({
   currency: {
     type: String,
     default: 'XOF', // Par exemple, pour les francs CFA
-    required: true
+    required: false
   },
   paymentMethod: {
     type: String,
-    enum: ['CREDIT_CARD', 'MOBILE_MONEY', 'BANK_TRANSFER'], // Différents modes de paiement
-    required: true
+    required: false
   },
   paymentStatus: {
     type: String,
@@ -28,7 +27,7 @@ const PaymentSchema = new mongoose.Schema({
   },
   transactionId: {
     type: String,
-    required: true
+    required: false
   },
   paymentDate: {
     type: Date,
