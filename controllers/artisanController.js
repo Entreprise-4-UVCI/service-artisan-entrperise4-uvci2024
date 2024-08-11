@@ -221,6 +221,20 @@ exports.getAllArtisans = async (req, res) => {
   }
 };
 
+
+
+exports.getAllArtisansByCity = async (req, res) => {
+  try {
+    const artisans = await Artisan.find({ role: "Artisan","city.value":req.params.idcity }).populate('userId');
+    // console.log(artisans.reverse());
+    return res.status(200).json({ data: artisans.reverse(), message: "Tous les artisans" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+
+
 exports.getAllClients = async (req, res) => {
   try {
     const clients = await Artisan.find({ role: "Client" }).populate('userId');
